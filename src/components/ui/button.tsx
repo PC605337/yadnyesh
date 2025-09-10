@@ -15,12 +15,19 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Healthcare-specific variants
+        medical: "bg-gradient-primary text-primary-foreground hover:shadow-medical transition-all duration-200",
+        healing: "bg-healing-green text-white hover:bg-healing-green/90 shadow-md hover:shadow-lg transition-all duration-200",
+        emergency: "bg-emergency-red text-white hover:bg-emergency-red/90 shadow-md animate-pulse hover:animate-none",
+        trust: "bg-trust-purple text-white hover:bg-trust-purple/90 shadow-md",
+        consultation: "bg-gradient-primary text-primary-foreground border-2 border-primary-glow/30 hover:border-primary-glow/50 shadow-glow hover:shadow-medical transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
+        hero: "h-14 px-10 py-4 text-lg rounded-2xl", // For hero sections
       },
     },
     defaultVariants: {
