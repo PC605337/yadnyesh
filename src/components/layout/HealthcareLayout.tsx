@@ -20,6 +20,7 @@ import {
   Heart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 interface NavigationItem {
   name: string;
@@ -30,8 +31,6 @@ interface NavigationItem {
 
 interface HealthcareLayoutProps {
   children: React.ReactNode;
-  userRole: "patient" | "provider" | "corporate" | "admin";
-  userName: string;
 }
 
 const navigationByRole = {
@@ -69,11 +68,20 @@ const navigationByRole = {
   ],
 };
 
-export function HealthcareLayout({ children, userRole, userName }: HealthcareLayoutProps) {
+export function HealthcareLayout({ children }: HealthcareLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
+  const { profile, signOut } = useAuth();
   
+  if (!profile) return null;
+  
+  const userRole = profile.role as "patient" | "provider" | "corporate" | "admin";
   const navigation = navigationByRole[userRole];
+  const displayName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email || 'User';
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <div className="min-h-screen bg-gradient-background">
@@ -132,12 +140,12 @@ export function HealthcareLayout({ children, userRole, userName }: HealthcareLay
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
               <span className="text-sm font-semibold text-primary">
-                {userName.charAt(0).toUpperCase()}
+                {displayName.charAt(0).toUpperCase()}
               </span>
             </div>
             {sidebarOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{userName}</p>
+                <p className="text-sm font-medium truncate">{displayName}</p>
                 <p className="text-xs text-muted-foreground capitalize">{userRole}</p>
               </div>
             )}
@@ -148,6 +156,7 @@ export function HealthcareLayout({ children, userRole, userName }: HealthcareLay
               variant="ghost"
               size="sm"
               className="w-full mt-3 justify-start text-muted-foreground"
+              onClick={handleSignOut}
             >
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out

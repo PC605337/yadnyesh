@@ -4,7 +4,7 @@ import { CorporateDashboard } from "@/components/dashboard/CorporateDashboard";
 
 const CorporateApp = () => {
   return (
-    <HealthcareLayout userRole="corporate" userName="Sarah Johnson (HR)">
+    <HealthcareLayout>
       <Routes>
         <Route index element={<CorporateDashboard />} />
         <Route path="employees" element={<div>Employees Coming Soon</div>} />

@@ -2,35 +2,121 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./hooks/useAuth";
+import { AuthPage } from "./components/auth/AuthPage";
 import PatientApp from "./pages/PatientApp";
 import ProviderApp from "./pages/ProviderApp";
 import CorporateApp from "./pages/CorporateApp";
 import ConsultationBooking from "./pages/ConsultationBooking";
 import PrescriptionManagement from "./pages/PrescriptionManagement";
 import NotFound from "./pages/NotFound";
+import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
 
+const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: string[] }) => {
+  const { user, profile, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+  
+  if (!user || !profile) {
+    return <Navigate to="/auth" replace />;
+  }
+  
+  if (allowedRoles && !allowedRoles.includes(profile.role)) {
+    return <Navigate to={`/${profile.role}`} replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const AppRoutes = () => {
+  const { user, profile, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+  
+  if (!user || !profile) {
+    return (
+      <Routes>
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="*" element={<Navigate to="/auth" replace />} />
+      </Routes>
+    );
+  }
+  
+  return (
+    <Routes>
+      <Route path="/auth" element={<Navigate to={`/${profile.role}`} replace />} />
+      <Route path="/" element={<Navigate to={`/${profile.role}`} replace />} />
+      <Route 
+        path="/patient/*" 
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <PatientApp />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/provider/*" 
+        element={
+          <ProtectedRoute allowedRoles={["provider"]}>
+            <ProviderApp />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/corporate/*" 
+        element={
+          <ProtectedRoute allowedRoles={["corporate"]}>
+            <CorporateApp />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/consultation" 
+        element={
+          <ProtectedRoute>
+            <ConsultationBooking />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/prescriptions" 
+        element={
+          <ProtectedRoute>
+            <PrescriptionManagement />
+          </ProtectedRoute>
+        } 
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/patient/*" element={<PatientApp />} />
-          <Route path="/provider/*" element={<ProviderApp />} />
-          <Route path="/corporate/*" element={<CorporateApp />} />
-          <Route path="/consultation" element={<ConsultationBooking />} />
-          <Route path="/prescriptions" element={<PrescriptionManagement />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

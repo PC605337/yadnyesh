@@ -4,7 +4,7 @@ import { PatientDashboard } from "@/components/dashboard/PatientDashboard";
 
 const PatientApp = () => {
   return (
-    <HealthcareLayout userRole="patient" userName="Rahul Sharma">
+    <HealthcareLayout>
       <Routes>
         <Route index element={<PatientDashboard />} />
         <Route path="consultation" element={<div>Consultation Booking Coming Soon</div>} />
