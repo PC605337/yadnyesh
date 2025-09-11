@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import { HealthcareLayout } from "@/components/layout/HealthcareLayout";
-import { PatientDashboard } from "@/components/dashboard/PatientDashboard";
+import { ComprehensivePatientDashboard } from "@/components/patient/ComprehensivePatientDashboard";
 
 const PatientApp = () => {
   return (
     <HealthcareLayout>
       <Routes>
-        <Route index element={<PatientDashboard />} />
+        <Route index element={<ComprehensivePatientDashboard />} />
         <Route path="consultation" element={<div>Consultation Booking Coming Soon</div>} />
         <Route path="appointments" element={<div>Appointments Coming Soon</div>} />
         <Route path="prescriptions" element={<div>Prescriptions Coming Soon</div>} />

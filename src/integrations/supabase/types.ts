@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_triage_sessions: {
+        Row: {
+          ai_response: Json
+          confidence_score: number | null
+          created_at: string
+          follow_up_recommendations: Json | null
+          id: string
+          input_data: Json
+          language_used: string | null
+          patient_id: string | null
+          provider_id: string | null
+          provider_notes: string | null
+          provider_review_required: boolean | null
+          recommended_specialty: string | null
+          session_type: string | null
+          updated_at: string
+          urgency_level: string | null
+        }
+        Insert: {
+          ai_response?: Json
+          confidence_score?: number | null
+          created_at?: string
+          follow_up_recommendations?: Json | null
+          id?: string
+          input_data?: Json
+          language_used?: string | null
+          patient_id?: string | null
+          provider_id?: string | null
+          provider_notes?: string | null
+          provider_review_required?: boolean | null
+          recommended_specialty?: string | null
+          session_type?: string | null
+          updated_at?: string
+          urgency_level?: string | null
+        }
+        Update: {
+          ai_response?: Json
+          confidence_score?: number | null
+          created_at?: string
+          follow_up_recommendations?: Json | null
+          id?: string
+          input_data?: Json
+          language_used?: string | null
+          patient_id?: string | null
+          provider_id?: string | null
+          provider_notes?: string | null
+          provider_review_required?: boolean | null
+          recommended_specialty?: string | null
+          session_type?: string | null
+          updated_at?: string
+          urgency_level?: string | null
+        }
+        Relationships: []
+      }
       appointments: {
         Row: {
           appointment_date: string
@@ -65,6 +119,262 @@ export type Database = {
         }
         Relationships: []
       }
+      community_forums: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_moderated: boolean | null
+          language: string | null
+          member_count: number | null
+          moderator_id: string | null
+          name: string
+          post_count: number | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_moderated?: boolean | null
+          language?: string | null
+          member_count?: number | null
+          moderator_id?: string | null
+          name: string
+          post_count?: number | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_moderated?: boolean | null
+          language?: string | null
+          member_count?: number | null
+          moderator_id?: string | null
+          name?: string
+          post_count?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cost_predictions: {
+        Row: {
+          condition_or_service: string
+          confidence_level: number | null
+          cost_breakdown: Json | null
+          created_at: string
+          factors_considered: Json | null
+          id: string
+          insurance_coverage: number | null
+          out_of_pocket_cost: number
+          patient_id: string
+          predicted_cost: number
+          prediction_type: string | null
+          recommendations: Json | null
+          timeline_months: number | null
+          updated_at: string
+        }
+        Insert: {
+          condition_or_service: string
+          confidence_level?: number | null
+          cost_breakdown?: Json | null
+          created_at?: string
+          factors_considered?: Json | null
+          id?: string
+          insurance_coverage?: number | null
+          out_of_pocket_cost: number
+          patient_id: string
+          predicted_cost: number
+          prediction_type?: string | null
+          recommendations?: Json | null
+          timeline_months?: number | null
+          updated_at?: string
+        }
+        Update: {
+          condition_or_service?: string
+          confidence_level?: number | null
+          cost_breakdown?: Json | null
+          created_at?: string
+          factors_considered?: Json | null
+          id?: string
+          insurance_coverage?: number | null
+          out_of_pocket_cost?: number
+          patient_id?: string
+          predicted_cost?: number
+          prediction_type?: string | null
+          recommendations?: Json | null
+          timeline_months?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      fertility_records: {
+        Row: {
+          basal_body_temperature: Json | null
+          consultation_notes: Json | null
+          cost_estimates: Json | null
+          created_at: string
+          fertility_medications: Json | null
+          fertility_status: string | null
+          fertility_tests: Json | null
+          id: string
+          insurance_coverage: Json | null
+          ivf_cycles: Json | null
+          ovulation_tracking: Json | null
+          partner_id: string | null
+          patient_id: string
+          success_probability: number | null
+          treatment_plan: Json | null
+          updated_at: string
+        }
+        Insert: {
+          basal_body_temperature?: Json | null
+          consultation_notes?: Json | null
+          cost_estimates?: Json | null
+          created_at?: string
+          fertility_medications?: Json | null
+          fertility_status?: string | null
+          fertility_tests?: Json | null
+          id?: string
+          insurance_coverage?: Json | null
+          ivf_cycles?: Json | null
+          ovulation_tracking?: Json | null
+          partner_id?: string | null
+          patient_id: string
+          success_probability?: number | null
+          treatment_plan?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          basal_body_temperature?: Json | null
+          consultation_notes?: Json | null
+          cost_estimates?: Json | null
+          created_at?: string
+          fertility_medications?: Json | null
+          fertility_status?: string | null
+          fertility_tests?: Json | null
+          id?: string
+          insurance_coverage?: Json | null
+          ivf_cycles?: Json | null
+          ovulation_tracking?: Json | null
+          partner_id?: string | null
+          patient_id?: string
+          success_probability?: number | null
+          treatment_plan?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      forum_posts: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          forum_id: string
+          id: string
+          is_anonymous: boolean | null
+          is_locked: boolean | null
+          is_pinned: boolean | null
+          language: string | null
+          post_type: string | null
+          reply_count: number | null
+          tags: Json | null
+          title: string
+          updated_at: string
+          upvotes: number | null
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          forum_id: string
+          id?: string
+          is_anonymous?: boolean | null
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          language?: string | null
+          post_type?: string | null
+          reply_count?: number | null
+          tags?: Json | null
+          title: string
+          updated_at?: string
+          upvotes?: number | null
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          forum_id?: string
+          id?: string
+          is_anonymous?: boolean | null
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          language?: string | null
+          post_type?: string | null
+          reply_count?: number | null
+          tags?: Json | null
+          title?: string
+          updated_at?: string
+          upvotes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_posts_forum_id_fkey"
+            columns: ["forum_id"]
+            isOneToOne: false
+            referencedRelation: "community_forums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_replies: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          is_anonymous: boolean | null
+          is_expert_reply: boolean | null
+          post_id: string
+          updated_at: string
+          upvotes: number | null
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          is_expert_reply?: boolean | null
+          post_id: string
+          updated_at?: string
+          upvotes?: number | null
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          is_expert_reply?: boolean | null
+          post_id?: string
+          updated_at?: string
+          upvotes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_replies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       health_records: {
         Row: {
           created_at: string
@@ -104,6 +414,75 @@ export type Database = {
           title?: string
           type?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      healthcare_providers: {
+        Row: {
+          address: Json
+          city: string | null
+          contact_info: Json
+          country: string | null
+          created_at: string
+          id: string
+          insurance_accepted: Json | null
+          is_partner: boolean | null
+          location_coords: unknown | null
+          name: string
+          operating_hours: Json | null
+          pricing_info: Json | null
+          provider_type: string | null
+          rating: number | null
+          review_count: number | null
+          services: Json | null
+          specialties: Json | null
+          state: string | null
+          updated_at: string
+          verification_status: string | null
+        }
+        Insert: {
+          address: Json
+          city?: string | null
+          contact_info: Json
+          country?: string | null
+          created_at?: string
+          id?: string
+          insurance_accepted?: Json | null
+          is_partner?: boolean | null
+          location_coords?: unknown | null
+          name: string
+          operating_hours?: Json | null
+          pricing_info?: Json | null
+          provider_type?: string | null
+          rating?: number | null
+          review_count?: number | null
+          services?: Json | null
+          specialties?: Json | null
+          state?: string | null
+          updated_at?: string
+          verification_status?: string | null
+        }
+        Update: {
+          address?: Json
+          city?: string | null
+          contact_info?: Json
+          country?: string | null
+          created_at?: string
+          id?: string
+          insurance_accepted?: Json | null
+          is_partner?: boolean | null
+          location_coords?: unknown | null
+          name?: string
+          operating_hours?: Json | null
+          pricing_info?: Json | null
+          provider_type?: string | null
+          rating?: number | null
+          review_count?: number | null
+          services?: Json | null
+          specialties?: Json | null
+          state?: string | null
+          updated_at?: string
+          verification_status?: string | null
         }
         Relationships: []
       }
@@ -163,6 +542,228 @@ export type Database = {
           },
         ]
       }
+      insurance_providers: {
+        Row: {
+          api_endpoint: string | null
+          contact_info: Json | null
+          coverage_types: Json | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          name: string
+          network_hospitals: Json | null
+          provider_code: string
+          supported_services: Json | null
+          updated_at: string
+        }
+        Insert: {
+          api_endpoint?: string | null
+          contact_info?: Json | null
+          coverage_types?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          network_hospitals?: Json | null
+          provider_code: string
+          supported_services?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          api_endpoint?: string | null
+          contact_info?: Json | null
+          coverage_types?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          network_hospitals?: Json | null
+          provider_code?: string
+          supported_services?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lab_orders: {
+        Row: {
+          ai_interpretation: Json | null
+          cost: number | null
+          created_at: string
+          critical_values: Json | null
+          id: string
+          insurance_covered: boolean | null
+          lab_partner: string
+          order_date: string
+          patient_id: string
+          provider_id: string
+          recommendations: Json | null
+          results_expected_date: string | null
+          results_received_date: string | null
+          sample_collection_date: string | null
+          status: string | null
+          test_results: Json | null
+          test_types: Json
+          updated_at: string
+        }
+        Insert: {
+          ai_interpretation?: Json | null
+          cost?: number | null
+          created_at?: string
+          critical_values?: Json | null
+          id?: string
+          insurance_covered?: boolean | null
+          lab_partner: string
+          order_date?: string
+          patient_id: string
+          provider_id: string
+          recommendations?: Json | null
+          results_expected_date?: string | null
+          results_received_date?: string | null
+          sample_collection_date?: string | null
+          status?: string | null
+          test_results?: Json | null
+          test_types?: Json
+          updated_at?: string
+        }
+        Update: {
+          ai_interpretation?: Json | null
+          cost?: number | null
+          created_at?: string
+          critical_values?: Json | null
+          id?: string
+          insurance_covered?: boolean | null
+          lab_partner?: string
+          order_date?: string
+          patient_id?: string
+          provider_id?: string
+          recommendations?: Json | null
+          results_expected_date?: string | null
+          results_received_date?: string | null
+          sample_collection_date?: string | null
+          status?: string | null
+          test_results?: Json | null
+          test_types?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      maternal_records: {
+        Row: {
+          actual_delivery_date: string | null
+          created_at: string
+          expected_due_date: string | null
+          gestational_week: number | null
+          id: string
+          lab_results: Json | null
+          lactation_data: Json | null
+          menstrual_cycle_data: Json | null
+          patient_id: string
+          postpartum_checkups: Json | null
+          pregnancy_complications: Json | null
+          pregnancy_stage: string | null
+          prenatal_vitamins: Json | null
+          ultrasound_reports: Json | null
+          updated_at: string
+          vital_signs: Json | null
+          weight_tracking: Json | null
+        }
+        Insert: {
+          actual_delivery_date?: string | null
+          created_at?: string
+          expected_due_date?: string | null
+          gestational_week?: number | null
+          id?: string
+          lab_results?: Json | null
+          lactation_data?: Json | null
+          menstrual_cycle_data?: Json | null
+          patient_id: string
+          postpartum_checkups?: Json | null
+          pregnancy_complications?: Json | null
+          pregnancy_stage?: string | null
+          prenatal_vitamins?: Json | null
+          ultrasound_reports?: Json | null
+          updated_at?: string
+          vital_signs?: Json | null
+          weight_tracking?: Json | null
+        }
+        Update: {
+          actual_delivery_date?: string | null
+          created_at?: string
+          expected_due_date?: string | null
+          gestational_week?: number | null
+          id?: string
+          lab_results?: Json | null
+          lactation_data?: Json | null
+          menstrual_cycle_data?: Json | null
+          patient_id?: string
+          postpartum_checkups?: Json | null
+          pregnancy_complications?: Json | null
+          pregnancy_stage?: string | null
+          prenatal_vitamins?: Json | null
+          ultrasound_reports?: Json | null
+          updated_at?: string
+          vital_signs?: Json | null
+          weight_tracking?: Json | null
+        }
+        Relationships: []
+      }
+      mental_health_records: {
+        Row: {
+          anxiety_levels: Json | null
+          assessment_type: string | null
+          coping_strategies: Json | null
+          created_at: string
+          crisis_plan: Json | null
+          depression_screening: Json | null
+          id: string
+          medication_response: Json | null
+          mood_tracking: Json | null
+          patient_id: string
+          progress_notes: Json | null
+          support_system: Json | null
+          therapist_id: string | null
+          therapy_sessions: Json | null
+          treatment_goals: Json | null
+          updated_at: string
+        }
+        Insert: {
+          anxiety_levels?: Json | null
+          assessment_type?: string | null
+          coping_strategies?: Json | null
+          created_at?: string
+          crisis_plan?: Json | null
+          depression_screening?: Json | null
+          id?: string
+          medication_response?: Json | null
+          mood_tracking?: Json | null
+          patient_id: string
+          progress_notes?: Json | null
+          support_system?: Json | null
+          therapist_id?: string | null
+          therapy_sessions?: Json | null
+          treatment_goals?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          anxiety_levels?: Json | null
+          assessment_type?: string | null
+          coping_strategies?: Json | null
+          created_at?: string
+          crisis_plan?: Json | null
+          depression_screening?: Json | null
+          id?: string
+          medication_response?: Json | null
+          mood_tracking?: Json | null
+          patient_id?: string
+          progress_notes?: Json | null
+          support_system?: Json | null
+          therapist_id?: string | null
+          therapy_sessions?: Json | null
+          treatment_goals?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           action_url: string | null
@@ -195,6 +796,259 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      patient_insurance: {
+        Row: {
+          beneficiaries: Json | null
+          copay_percentage: number | null
+          coverage_amount: number | null
+          covered_services: Json | null
+          created_at: string
+          deductible_amount: number | null
+          exclusions: Json | null
+          id: string
+          is_active: boolean | null
+          patient_id: string
+          policy_end_date: string
+          policy_number: string
+          policy_start_date: string
+          policy_type: string | null
+          premium_amount: number | null
+          provider_id: string
+          updated_at: string
+        }
+        Insert: {
+          beneficiaries?: Json | null
+          copay_percentage?: number | null
+          coverage_amount?: number | null
+          covered_services?: Json | null
+          created_at?: string
+          deductible_amount?: number | null
+          exclusions?: Json | null
+          id?: string
+          is_active?: boolean | null
+          patient_id: string
+          policy_end_date: string
+          policy_number: string
+          policy_start_date: string
+          policy_type?: string | null
+          premium_amount?: number | null
+          provider_id: string
+          updated_at?: string
+        }
+        Update: {
+          beneficiaries?: Json | null
+          copay_percentage?: number | null
+          coverage_amount?: number | null
+          covered_services?: Json | null
+          created_at?: string
+          deductible_amount?: number | null
+          exclusions?: Json | null
+          id?: string
+          is_active?: boolean | null
+          patient_id?: string
+          policy_end_date?: string
+          policy_number?: string
+          policy_start_date?: string
+          policy_type?: string | null
+          premium_amount?: number | null
+          provider_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_insurance_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_risk_scores: {
+        Row: {
+          calculated_at: string
+          cardiovascular_risk: number | null
+          chronic_disease_risk: number | null
+          created_at: string
+          diabetes_risk: number | null
+          id: string
+          maternal_risk: number | null
+          mental_health_risk: number | null
+          next_assessment_date: string | null
+          overall_risk_score: number | null
+          patient_id: string
+          protective_factors: Json | null
+          recommendations: Json | null
+          risk_factors: Json | null
+          updated_at: string
+        }
+        Insert: {
+          calculated_at?: string
+          cardiovascular_risk?: number | null
+          chronic_disease_risk?: number | null
+          created_at?: string
+          diabetes_risk?: number | null
+          id?: string
+          maternal_risk?: number | null
+          mental_health_risk?: number | null
+          next_assessment_date?: string | null
+          overall_risk_score?: number | null
+          patient_id: string
+          protective_factors?: Json | null
+          recommendations?: Json | null
+          risk_factors?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          calculated_at?: string
+          cardiovascular_risk?: number | null
+          chronic_disease_risk?: number | null
+          created_at?: string
+          diabetes_risk?: number | null
+          id?: string
+          maternal_risk?: number | null
+          mental_health_risk?: number | null
+          next_assessment_date?: string | null
+          overall_risk_score?: number | null
+          patient_id?: string
+          protective_factors?: Json | null
+          recommendations?: Json | null
+          risk_factors?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pediatric_records: {
+        Row: {
+          allergies: Json | null
+          behavioral_notes: Json | null
+          birth_date: string
+          birth_height: number | null
+          birth_weight: number | null
+          created_at: string
+          development_assessments: Json | null
+          emergency_contacts: Json | null
+          feeding_schedule: Json | null
+          growth_milestones: Json | null
+          id: string
+          medical_conditions: Json | null
+          parent_id: string
+          patient_id: string
+          pediatrician_id: string | null
+          sleep_patterns: Json | null
+          updated_at: string
+          vaccination_schedule: Json | null
+        }
+        Insert: {
+          allergies?: Json | null
+          behavioral_notes?: Json | null
+          birth_date: string
+          birth_height?: number | null
+          birth_weight?: number | null
+          created_at?: string
+          development_assessments?: Json | null
+          emergency_contacts?: Json | null
+          feeding_schedule?: Json | null
+          growth_milestones?: Json | null
+          id?: string
+          medical_conditions?: Json | null
+          parent_id: string
+          patient_id: string
+          pediatrician_id?: string | null
+          sleep_patterns?: Json | null
+          updated_at?: string
+          vaccination_schedule?: Json | null
+        }
+        Update: {
+          allergies?: Json | null
+          behavioral_notes?: Json | null
+          birth_date?: string
+          birth_height?: number | null
+          birth_weight?: number | null
+          created_at?: string
+          development_assessments?: Json | null
+          emergency_contacts?: Json | null
+          feeding_schedule?: Json | null
+          growth_milestones?: Json | null
+          id?: string
+          medical_conditions?: Json | null
+          parent_id?: string
+          patient_id?: string
+          pediatrician_id?: string | null
+          sleep_patterns?: Json | null
+          updated_at?: string
+          vaccination_schedule?: Json | null
+        }
+        Relationships: []
+      }
+      pharmacy_orders: {
+        Row: {
+          created_at: string
+          delivery_address: Json
+          delivery_date: string | null
+          delivery_instructions: string | null
+          delivery_status: string | null
+          discount_amount: number | null
+          id: string
+          insurance_coverage: number | null
+          medications: Json
+          order_date: string
+          patient_id: string
+          payment_status: string | null
+          pharmacy_partner: string
+          prescription_id: string | null
+          total_amount: number
+          tracking_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          delivery_address: Json
+          delivery_date?: string | null
+          delivery_instructions?: string | null
+          delivery_status?: string | null
+          discount_amount?: number | null
+          id?: string
+          insurance_coverage?: number | null
+          medications?: Json
+          order_date?: string
+          patient_id: string
+          payment_status?: string | null
+          pharmacy_partner: string
+          prescription_id?: string | null
+          total_amount: number
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          delivery_address?: Json
+          delivery_date?: string | null
+          delivery_instructions?: string | null
+          delivery_status?: string | null
+          discount_amount?: number | null
+          id?: string
+          insurance_coverage?: number | null
+          medications?: Json
+          order_date?: string
+          patient_id?: string
+          payment_status?: string | null
+          pharmacy_partner?: string
+          prescription_id?: string | null
+          total_amount?: number
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pharmacy_orders_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       prescriptions: {
         Row: {
@@ -303,6 +1157,53 @@ export type Database = {
         }
         Relationships: []
       }
+      program_enrollments: {
+        Row: {
+          completion_percentage: number | null
+          created_at: string
+          enrollment_date: string
+          feedback: Json | null
+          id: string
+          patient_id: string
+          program_id: string
+          progress_data: Json | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          completion_percentage?: number | null
+          created_at?: string
+          enrollment_date?: string
+          feedback?: Json | null
+          id?: string
+          patient_id: string
+          program_id: string
+          progress_data?: Json | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          completion_percentage?: number | null
+          created_at?: string
+          enrollment_date?: string
+          feedback?: Json | null
+          id?: string
+          patient_id?: string
+          program_id?: string
+          progress_data?: Json | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "program_enrollments_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "wellness_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_profiles: {
         Row: {
           available_slots: Json | null
@@ -354,6 +1255,93 @@ export type Database = {
           total_consultations?: number | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      translations: {
+        Row: {
+          created_at: string
+          entity_id: string
+          entity_type: string
+          field_name: string
+          id: string
+          language: string
+          translated_text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          field_name: string
+          id?: string
+          language: string
+          translated_text: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          field_name?: string
+          id?: string
+          language?: string
+          translated_text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      wellness_programs: {
+        Row: {
+          content: Json
+          cost: number | null
+          created_at: string
+          description: string | null
+          difficulty_level: string | null
+          duration_weeks: number
+          enrollment_count: number | null
+          id: string
+          is_corporate_program: boolean | null
+          language: string | null
+          name: string
+          program_type: string | null
+          rating: number | null
+          target_audience: Json | null
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          cost?: number | null
+          created_at?: string
+          description?: string | null
+          difficulty_level?: string | null
+          duration_weeks: number
+          enrollment_count?: number | null
+          id?: string
+          is_corporate_program?: boolean | null
+          language?: string | null
+          name: string
+          program_type?: string | null
+          rating?: number | null
+          target_audience?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          cost?: number | null
+          created_at?: string
+          description?: string | null
+          difficulty_level?: string | null
+          duration_weeks?: number
+          enrollment_count?: number | null
+          id?: string
+          is_corporate_program?: boolean | null
+          language?: string | null
+          name?: string
+          program_type?: string | null
+          rating?: number | null
+          target_audience?: Json | null
+          updated_at?: string
         }
         Relationships: []
       }
