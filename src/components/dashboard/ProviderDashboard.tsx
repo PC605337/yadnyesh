@@ -65,8 +65,8 @@ export function ProviderDashboard() {
           id: apt.id,
           patient: `${apt.patient.first_name} ${apt.patient.last_name}`,
           time: new Date(apt.appointment_date).toLocaleTimeString(),
-          type: apt.type === 'video_call' ? 'video' : apt.type === 'phone_call' ? 'audio' : 'chat',
-          status: apt.status === 'confirmed' ? 'upcoming' : apt.status === 'in_progress' ? 'ongoing' : 'completed',
+          type: apt.type === 'video_call' ? 'video' as const : apt.type === 'phone_call' ? 'audio' as const : 'chat' as const,
+          status: apt.status === 'confirmed' ? 'upcoming' as const : apt.status === 'in_progress' ? 'ongoing' as const : 'completed' as const,
           reason: apt.reason || 'General consultation'
         }));
         setAppointments(formattedAppointments);
