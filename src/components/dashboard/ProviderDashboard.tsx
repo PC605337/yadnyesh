@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,8 @@ import {
   MessageCircle,
   Phone
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface PatientAppointment {
   id: string;
@@ -30,38 +33,62 @@ interface EarningsData {
 }
 
 export function ProviderDashboard() {
-  const todayAppointments: PatientAppointment[] = [
-    {
-      id: "1",
-      patient: "Rahul Sharma",
-      time: "2:30 PM",
-      type: "video",
-      status: "upcoming",
-      reason: "Regular checkup"
-    },
-    {
-      id: "2",
-      patient: "Priya Patel",
-      time: "3:00 PM", 
-      type: "video",
-      status: "upcoming",
-      reason: "Follow-up consultation"
-    },
-    {
-      id: "3",
-      patient: "Amit Kumar",
-      time: "3:30 PM",
-      type: "chat",
-      status: "upcoming", 
-      reason: "Prescription renewal"
-    }
-  ];
+  const [appointments, setAppointments] = useState<PatientAppointment[]>([]);
+  const [earnings, setEarnings] = useState<EarningsData>({
+    today: 0,
+    thisWeek: 0,
+    thisMonth: 0,
+    trend: 0
+  });
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const earnings: EarningsData = {
-    today: 4500,
-    thisWeek: 28000,
-    thisMonth: 125000,
-    trend: 12.5
+  useEffect(() => {
+    fetchProviderData();
+  }, []);
+
+  const fetchProviderData = async () => {
+    try {
+      // Fetch today's appointments
+      const { data: appointmentsData } = await supabase
+        .from('appointments')
+        .select(`
+          *,
+          patient:profiles!appointments_patient_id_fkey(first_name, last_name)
+        `)
+        .eq('provider_id', 'provider-1') // Replace with actual auth.uid()
+        .gte('appointment_date', new Date().toISOString().split('T')[0])
+        .lt('appointment_date', new Date(Date.now() + 24*60*60*1000).toISOString().split('T')[0]);
+
+      if (appointmentsData) {
+        const formattedAppointments = appointmentsData.map((apt: any) => ({
+          id: apt.id,
+          patient: `${apt.patient.first_name} ${apt.patient.last_name}`,
+          time: new Date(apt.appointment_date).toLocaleTimeString(),
+          type: apt.type === 'video_call' ? 'video' : apt.type === 'phone_call' ? 'audio' : 'chat',
+          status: apt.status === 'confirmed' ? 'upcoming' : apt.status === 'in_progress' ? 'ongoing' : 'completed',
+          reason: apt.reason || 'General consultation'
+        }));
+        setAppointments(formattedAppointments);
+      }
+
+      // Calculate earnings (mock for now, but structure for real data)
+      setEarnings({
+        today: 4500,
+        thisWeek: 28000,
+        thisMonth: 125000,
+        trend: 12.5
+      });
+    } catch (error) {
+      console.error('Error fetching provider data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load dashboard data",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const stats = [
@@ -143,11 +170,15 @@ export function ProviderDashboard() {
                 <Button variant="outline" size="sm">View Calendar</Button>
               </div>
               <CardDescription>
-                {todayAppointments.length} appointments scheduled
+                {appointments.length} appointments scheduled
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {todayAppointments.map((appointment) => (
+              {loading ? (
+                <div className="text-center py-8">Loading appointments...</div>
+              ) : appointments.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">No appointments scheduled for today</div>
+              ) : appointments.map((appointment) => (
                 <div key={appointment.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                   <div className="flex items-center space-x-4">
                     <div className="bg-primary/10 p-2 rounded-lg">
