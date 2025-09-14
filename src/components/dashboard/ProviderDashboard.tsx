@@ -61,33 +61,38 @@ export function ProviderDashboard() {
         .lt('appointment_date', new Date(Date.now() + 24*60*60*1000).toISOString().split('T')[0]);
 
       if (appointmentsData) {
-        const formattedAppointments: PatientAppointment[] = appointmentsData.map((apt: any): PatientAppointment => {
-          // Ensure proper type mapping
-          let appointmentType: "video" | "audio" | "chat" = "chat";
-          if (apt.type === 'video_call' || apt.type === 'video') {
+        const formattedAppointments: PatientAppointment[] = appointmentsData.map((apt: any) => {
+          const first = apt?.patient?.first_name ?? "";
+          const last = apt?.patient?.last_name ?? "";
+
+          // Normalize type to our union
+          let appointmentType: PatientAppointment["type"] = "chat";
+          if (apt.type === "video_call" || apt.type === "video") {
             appointmentType = "video";
-          } else if (apt.type === 'phone_call' || apt.type === 'audio') {
+          } else if (apt.type === "phone_call" || apt.type === "audio") {
             appointmentType = "audio";
           }
 
-          // Ensure proper status mapping
-          let appointmentStatus: "upcoming" | "ongoing" | "completed" = "upcoming";
-          if (apt.status === 'confirmed' || apt.status === 'scheduled') {
+          // Normalize status to our union
+          let appointmentStatus: PatientAppointment["status"] = "upcoming";
+          if (apt.status === "confirmed" || apt.status === "scheduled") {
             appointmentStatus = "upcoming";
-          } else if (apt.status === 'in_progress' || apt.status === 'active') {
+          } else if (apt.status === "in_progress" || apt.status === "active") {
             appointmentStatus = "ongoing";
-          } else if (apt.status === 'completed' || apt.status === 'finished') {
+          } else if (apt.status === "completed" || apt.status === "finished") {
             appointmentStatus = "completed";
           }
 
-          return {
-            id: apt.id,
-            patient: `${apt.patient.first_name} ${apt.patient.last_name}`,
+          const apptObj: PatientAppointment = {
+            id: String(apt.id),
+            patient: `${first} ${last}`.trim() || "Unknown Patient",
             time: new Date(apt.appointment_date).toLocaleTimeString(),
             type: appointmentType,
             status: appointmentStatus,
-            reason: apt.reason || 'General consultation'
+            reason: typeof apt.reason === "string" ? apt.reason : "General consultation",
           };
+
+          return apptObj;
         });
         setAppointments(formattedAppointments);
       }
