@@ -61,14 +61,34 @@ export function ProviderDashboard() {
         .lt('appointment_date', new Date(Date.now() + 24*60*60*1000).toISOString().split('T')[0]);
 
       if (appointmentsData) {
-        const formattedAppointments = appointmentsData.map((apt: any) => ({
-          id: apt.id,
-          patient: `${apt.patient.first_name} ${apt.patient.last_name}`,
-          time: new Date(apt.appointment_date).toLocaleTimeString(),
-          type: apt.type === 'video_call' ? 'video' as const : apt.type === 'phone_call' ? 'audio' as const : 'chat' as const,
-          status: apt.status === 'confirmed' ? 'upcoming' as const : apt.status === 'in_progress' ? 'ongoing' as const : 'completed' as const,
-          reason: apt.reason || 'General consultation'
-        }));
+        const formattedAppointments = appointmentsData.map((apt: any) => {
+          // Ensure proper type mapping
+          let appointmentType: "video" | "audio" | "chat" = "chat";
+          if (apt.type === 'video_call' || apt.type === 'video') {
+            appointmentType = "video";
+          } else if (apt.type === 'phone_call' || apt.type === 'audio') {
+            appointmentType = "audio";
+          }
+
+          // Ensure proper status mapping
+          let appointmentStatus: "upcoming" | "ongoing" | "completed" = "upcoming";
+          if (apt.status === 'confirmed' || apt.status === 'scheduled') {
+            appointmentStatus = "upcoming";
+          } else if (apt.status === 'in_progress' || apt.status === 'active') {
+            appointmentStatus = "ongoing";
+          } else if (apt.status === 'completed' || apt.status === 'finished') {
+            appointmentStatus = "completed";
+          }
+
+          return {
+            id: apt.id,
+            patient: `${apt.patient.first_name} ${apt.patient.last_name}`,
+            time: new Date(apt.appointment_date).toLocaleTimeString(),
+            type: appointmentType,
+            status: appointmentStatus,
+            reason: apt.reason || 'General consultation'
+          };
+        });
         setAppointments(formattedAppointments);
       }
 
