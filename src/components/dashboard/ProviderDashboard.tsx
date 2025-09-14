@@ -61,7 +61,7 @@ export function ProviderDashboard() {
         .lt('appointment_date', new Date(Date.now() + 24*60*60*1000).toISOString().split('T')[0]);
 
       if (appointmentsData) {
-        const formattedAppointments = appointmentsData.map((apt: any) => {
+        const formattedAppointments: PatientAppointment[] = appointmentsData.map((apt: any): PatientAppointment => {
           // Ensure proper type mapping
           let appointmentType: "video" | "audio" | "chat" = "chat";
           if (apt.type === 'video_call' || apt.type === 'video') {
