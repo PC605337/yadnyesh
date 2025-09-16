@@ -5,17 +5,22 @@ import { CommunityForum } from "@/components/community/CommunityForum";
 import { PharmacyIntegration } from "@/components/pharmacy/PharmacyIntegration";
 import { WellnessPrograms } from "@/components/wellness/WellnessPrograms";
 import { CostPrediction } from "@/components/prediction/CostPrediction";
+import { VideoConsultation } from "@/components/telemedicine/VideoConsultation";
+import { AppointmentManagement } from "@/components/appointments/AppointmentManagement";
+import { PrescriptionTracker } from "@/components/prescriptions/PrescriptionTracker";
+import { HealthRecordsManager } from "@/components/records/HealthRecordsManager";
+import { InsuranceManager } from "@/components/insurance/InsuranceManager";
 
 const PatientApp = () => {
   return (
     <HealthcareLayout>
       <Routes>
         <Route index element={<ComprehensivePatientDashboard />} />
-        <Route path="consultation" element={<div>Consultation Booking Coming Soon</div>} />
-        <Route path="appointments" element={<div>Appointments Coming Soon</div>} />
-        <Route path="prescriptions" element={<div>Prescriptions Coming Soon</div>} />
-        <Route path="records" element={<div>Health Records Coming Soon</div>} />
-        <Route path="insurance" element={<div>Insurance Coming Soon</div>} />
+        <Route path="consultation" element={<VideoConsultation />} />
+        <Route path="appointments" element={<AppointmentManagement />} />
+        <Route path="prescriptions" element={<PrescriptionTracker />} />
+        <Route path="records" element={<HealthRecordsManager />} />
+        <Route path="insurance" element={<InsuranceManager />} />
         <Route path="wellness" element={<WellnessPrograms />} />
         <Route path="community" element={<CommunityForum />} />
         <Route path="pharmacy" element={<PharmacyIntegration />} />
