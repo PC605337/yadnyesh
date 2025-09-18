@@ -21,7 +21,9 @@ import {
   CreditCard,
   Wallet,
   TrendingUp,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Upload,
+  HelpCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -44,10 +46,13 @@ const navigationByRole = {
     { name: "Appointments", href: "/patient/appointments", icon: Calendar, badge: "2" },
     { name: "Prescriptions", href: "/patient/prescriptions", icon: Pill },
     { name: "Health Records", href: "/patient/records", icon: FileText },
+    { name: "Upload Documents", href: "/patient/upload-documents", icon: Upload },
     { name: "Insurance", href: "/patient/insurance", icon: Shield },
     { name: "Wellness", href: "/patient/wellness", icon: Heart },
     { name: "Payments", href: "/patient/payments", icon: CreditCard },
     { name: "Wallet", href: "/patient/wallet", icon: Wallet },
+    { name: "Privacy & Consent", href: "/patient/consent-manager", icon: Shield },
+    { name: "Help & Support", href: "/patient/help-support", icon: HelpCircle },
   ],
   provider: [
     { name: "Dashboard", href: "/provider", icon: Home },

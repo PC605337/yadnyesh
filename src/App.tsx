@@ -14,6 +14,8 @@ import PrescriptionManagement from "./pages/PrescriptionManagement";
 import NotFound from "./pages/NotFound";
 import TermsOfService from "./pages/legal/TermsOfService";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import ErrorBoundary from "./components/common/ErrorBoundary";
+import { AccessibilityProvider } from "./components/accessibility/AccessibilityProvider";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
@@ -112,6 +114,8 @@ const AppRoutes = () => {
           </ProtectedRoute>
         } 
       />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -120,13 +124,17 @@ const AppRoutes = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </TooltipProvider>
+      <AccessibilityProvider>
+        <ErrorBoundary>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </ErrorBoundary>
+      </AccessibilityProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

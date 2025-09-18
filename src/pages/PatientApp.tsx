@@ -15,6 +15,9 @@ import IndianPaymentGateway from "@/components/payments/IndianPaymentGateway";
 import { TransparentPaymentGateway } from "@/components/payments/TransparentPaymentGateway";
 import { PaymentLinks } from "@/components/payments/PaymentLinks";
 import { DigitalWallet } from "@/components/payments/DigitalWallet";
+import { MedicalDocumentUpload } from "@/components/uploads/MedicalDocumentUpload";
+import { ConsentManager } from "@/components/compliance/ConsentManager";
+import HelpSupport from "@/components/support/HelpSupport";
 
 const PatientApp = () => {
   return (
@@ -32,6 +35,9 @@ const PatientApp = () => {
         <Route path="cost-prediction" element={<CostPrediction />} />
         <Route path="payments" element={<TransparentPaymentGateway amount={2500} serviceType="teleconsult" onPaymentSuccess={(id, method) => console.log('Payment completed:', id, method)} />} />
         <Route path="wallet" element={<DigitalWallet />} />
+        <Route path="upload-documents" element={<MedicalDocumentUpload />} />
+        <Route path="consent-manager" element={<ConsentManager />} />
+        <Route path="help-support" element={<HelpSupport />} />
         <Route path="settings" element={<PatientSettings />} />
       </Routes>
     </HealthcareLayout>
