@@ -53,19 +53,41 @@ const AppRoutes = () => {
     );
   }
   
-  if (!user || !profile) {
+  // If no user, show auth routes
+  if (!user) {
     return (
       <Routes>
         <Route path="/auth" element={<Auth />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/" element={<Navigate to="/auth" replace />} />
         <Route path="*" element={<Navigate to="/auth" replace />} />
       </Routes>
+    );
+  }
+
+  // If user exists but no profile yet, stay on current route but show loading
+  if (!profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Setting up your profile...</p>
+        </div>
+      </div>
     );
   }
   
   return (
     <Routes>
-      <Route path="/auth" element={<Navigate to={`/${profile.role}`} replace />} />
-      <Route path="/" element={<Navigate to={`/${profile.role}`} replace />} />
+      <Route 
+        path="/auth" 
+        element={<Navigate to={`/${profile.role}`} replace />} 
+      />
+      <Route 
+        path="/" 
+        element={<Navigate to={`/${profile.role}`} replace />} 
+      />
       <Route 
         path="/patient/*" 
         element={

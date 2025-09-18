@@ -48,15 +48,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
+        if (!mounted) return;
+        
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile
-          setTimeout(async () => {
+          // Fetch user profile with better error handling
+          const fetchProfile = async () => {
             try {
               const { data: profileData, error } = await supabase
                 .from('profiles')
@@ -64,54 +68,105 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 .eq('user_id', session.user.id)
                 .single();
 
+              if (!mounted) return;
+
               if (error) {
                 console.error('Error fetching profile:', error);
+                // Create a basic profile if one doesn't exist
+                setProfile({
+                  id: session.user.id,
+                  user_id: session.user.id,
+                  first_name: session.user.user_metadata?.first_name || null,
+                  last_name: session.user.user_metadata?.last_name || null,
+                  email: session.user.email || null,
+                  role: session.user.user_metadata?.role || 'patient',
+                  phone: session.user.user_metadata?.phone || null,
+                  avatar_url: null,
+                });
               } else {
                 setProfile(profileData);
               }
             } catch (error) {
               console.error('Profile fetch error:', error);
+              if (mounted) {
+                // Fallback profile
+                setProfile({
+                  id: session.user.id,
+                  user_id: session.user.id,
+                  first_name: session.user.user_metadata?.first_name || null,
+                  last_name: session.user.user_metadata?.last_name || null,
+                  email: session.user.email || null,
+                  role: session.user.user_metadata?.role || 'patient',
+                  phone: session.user.user_metadata?.phone || null,
+                  avatar_url: null,
+                });
+              }
+            } finally {
+              if (mounted) {
+                setLoading(false);
+              }
             }
-          }, 0);
+          };
+
+          fetchProfile();
         } else {
           setProfile(null);
+          setLoading(false);
         }
-        
-        setLoading(false);
       }
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        // Fetch user profile
-        setTimeout(async () => {
-          try {
-            const { data: profileData, error } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('user_id', session.user.id)
-              .single();
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!mounted) return;
+        
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          const { data: profileData, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
 
-            if (error) {
-              console.error('Error fetching profile:', error);
-            } else {
-              setProfile(profileData);
-            }
-          } catch (error) {
-            console.error('Profile fetch error:', error);
+          if (!mounted) return;
+
+          if (error) {
+            console.error('Error fetching profile:', error);
+            // Create fallback profile
+            setProfile({
+              id: session.user.id,
+              user_id: session.user.id,
+              first_name: session.user.user_metadata?.first_name || null,
+              last_name: session.user.user_metadata?.last_name || null,
+              email: session.user.email || null,
+              role: session.user.user_metadata?.role || 'patient',
+              phone: session.user.user_metadata?.phone || null,
+              avatar_url: null,
+            });
+          } else {
+            setProfile(profileData);
           }
+        }
+      } catch (error) {
+        console.error('Session check error:', error);
+      } finally {
+        if (mounted) {
           setLoading(false);
-        }, 0);
-      } else {
-        setLoading(false);
+        }
       }
-    });
+    };
 
-    return () => subscription.unsubscribe();
+    checkSession();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
