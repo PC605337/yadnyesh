@@ -17,7 +17,11 @@ import {
   Video,
   Activity,
   Building2,
-  Heart
+  Heart,
+  CreditCard,
+  Wallet,
+  TrendingUp,
+  Link as LinkIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -42,6 +46,8 @@ const navigationByRole = {
     { name: "Health Records", href: "/patient/records", icon: FileText },
     { name: "Insurance", href: "/patient/insurance", icon: Shield },
     { name: "Wellness", href: "/patient/wellness", icon: Heart },
+    { name: "Payments", href: "/patient/payments", icon: CreditCard },
+    { name: "Wallet", href: "/patient/wallet", icon: Wallet },
   ],
   provider: [
     { name: "Dashboard", href: "/provider", icon: Home },
@@ -49,6 +55,8 @@ const navigationByRole = {
     { name: "Schedule", href: "/provider/schedule", icon: Calendar, badge: "12" },
     { name: "Consultations", href: "/provider/consultations", icon: Video },
     { name: "Earnings", href: "/provider/earnings", icon: Activity },
+    { name: "Payment Links", href: "/provider/payment-links", icon: LinkIcon },
+    { name: "Verification", href: "/provider/verification", icon: Shield },
     { name: "Settings", href: "/provider/settings", icon: Settings },
   ],
   corporate: [
@@ -63,6 +71,7 @@ const navigationByRole = {
     { name: "Dashboard", href: "/admin", icon: Home },
     { name: "Users", href: "/admin/users", icon: Users },
     { name: "Providers", href: "/admin/providers", icon: Building2 },
+    { name: "Doctor Verification", href: "/admin/doctor-verification", icon: Shield },
     { name: "System", href: "/admin/system", icon: Settings },
     { name: "Analytics", href: "/admin/analytics", icon: Activity },
   ],

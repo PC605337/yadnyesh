@@ -4,6 +4,7 @@ import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { ProviderManagement } from "@/components/admin/ProviderManagement";
 import { SystemSettings } from "@/components/admin/SystemSettings";
+import { DoctorVerification } from "@/components/verification/DoctorVerification";
 import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
 
 const AdminApp = () => {
@@ -15,6 +16,7 @@ const AdminApp = () => {
         <Route path="providers" element={<ProviderManagement />} />
         <Route path="system" element={<SystemSettings />} />
         <Route path="analytics" element={<AdminAnalytics />} />
+        <Route path="doctor-verification" element={<DoctorVerification />} />
       </Routes>
     </HealthcareLayout>
   );

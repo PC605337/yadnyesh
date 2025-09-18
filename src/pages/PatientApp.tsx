@@ -12,6 +12,9 @@ import { HealthRecordsManager } from "@/components/records/HealthRecordsManager"
 import { InsuranceManager } from "@/components/insurance/InsuranceManager";
 import { PatientSettings } from "@/components/settings/PatientSettings";
 import IndianPaymentGateway from "@/components/payments/IndianPaymentGateway";
+import { TransparentPaymentGateway } from "@/components/payments/TransparentPaymentGateway";
+import { PaymentLinks } from "@/components/payments/PaymentLinks";
+import { DigitalWallet } from "@/components/payments/DigitalWallet";
 
 const PatientApp = () => {
   return (
@@ -27,7 +30,8 @@ const PatientApp = () => {
         <Route path="community" element={<CommunityForum />} />
         <Route path="pharmacy" element={<PharmacyIntegration />} />
         <Route path="cost-prediction" element={<CostPrediction />} />
-        <Route path="payments" element={<IndianPaymentGateway amount={2500} onPaymentSuccess={() => console.log('Payment completed')} />} />
+        <Route path="payments" element={<TransparentPaymentGateway amount={2500} serviceType="teleconsult" onPaymentSuccess={(id, method) => console.log('Payment completed:', id, method)} />} />
+        <Route path="wallet" element={<DigitalWallet />} />
         <Route path="settings" element={<PatientSettings />} />
       </Routes>
     </HealthcareLayout>
