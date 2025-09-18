@@ -84,16 +84,27 @@ export function AppointmentManagement() {
         .order('appointment_date', { ascending: true });
 
       if (error) throw error;
-      setAppointments((data || []).map(apt => ({
-        ...apt,
-        type: apt.type as 'video' | 'audio' | 'in_person',
-        status: apt.status as 'scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled',
-        provider: apt.provider && typeof apt.provider === 'object' && 'user' in apt.provider ? {
-          first_name: apt.provider.user?.first_name || '',
-          last_name: apt.provider.user?.last_name || '',
-          specialties: apt.provider.specialties || []
-        } : undefined
-      })));
+      setAppointments((data || []).map(apt => {
+        let provider: { first_name: string; last_name: string; specialties?: string[]; } | undefined;
+        
+        if (apt.provider && typeof apt.provider === 'object') {
+          const providerObj = apt.provider as any;
+          if ('user' in providerObj && providerObj.user) {
+            provider = {
+              first_name: providerObj.user.first_name || '',
+              last_name: providerObj.user.last_name || '',
+              specialties: providerObj.specialties || []
+            };
+          }
+        }
+        
+        return {
+          ...apt,
+          type: apt.type as 'video' | 'audio' | 'in_person',
+          status: apt.status as 'scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled',
+          provider
+        };
+      }));
     } catch (error) {
       console.error('Error fetching appointments:', error);
       toast.error('Failed to load appointments');

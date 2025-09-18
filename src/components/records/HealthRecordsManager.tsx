@@ -97,7 +97,24 @@ export function HealthRecordsManager() {
         .order('recorded_date', { ascending: false });
 
       if (error) throw error;
-      setRecords(data || []);
+      setRecords((data || []).map(record => {
+        let provider: { first_name: string; last_name: string; } | undefined;
+        
+        if (record.provider && typeof record.provider === 'object') {
+          const providerObj = record.provider as any;
+          if ('user' in providerObj && providerObj.user) {
+            provider = {
+              first_name: providerObj.user.first_name || '',
+              last_name: providerObj.user.last_name || ''
+            };
+          }
+        }
+        
+        return {
+          ...record,
+          provider
+        };
+      }));
     } catch (error) {
       console.error('Error fetching health records:', error);
       toast.error('Failed to load health records');

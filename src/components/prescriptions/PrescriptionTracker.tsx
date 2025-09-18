@@ -75,15 +75,26 @@ export function PrescriptionTracker() {
         .order('issued_date', { ascending: false });
 
       if (error) throw error;
-      setPrescriptions((data || []).map(prescription => ({
-        ...prescription,
-        medications: Array.isArray(prescription.medications) ? prescription.medications : [],
-        status: prescription.status as 'active' | 'completed' | 'expired' | 'cancelled',
-        provider: prescription.provider && typeof prescription.provider === 'object' && 'user' in prescription.provider ? {
-          first_name: prescription.provider.user?.first_name || '',
-          last_name: prescription.provider.user?.last_name || ''
-        } : undefined
-      })));
+      setPrescriptions((data || []).map(prescription => {
+        let provider: { first_name: string; last_name: string; } | undefined;
+        
+        if (prescription.provider && typeof prescription.provider === 'object') {
+          const providerObj = prescription.provider as any;
+          if ('user' in providerObj && providerObj.user) {
+            provider = {
+              first_name: providerObj.user.first_name || '',
+              last_name: providerObj.user.last_name || ''
+            };
+          }
+        }
+        
+        return {
+          ...prescription,
+          medications: Array.isArray(prescription.medications) ? prescription.medications : [],
+          status: prescription.status as 'active' | 'completed' | 'expired' | 'cancelled',
+          provider
+        };
+      }));
     } catch (error) {
       console.error('Error fetching prescriptions:', error);
       toast.error('Failed to load prescriptions');
