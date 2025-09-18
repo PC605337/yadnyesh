@@ -200,6 +200,7 @@ export function AuthPage() {
                         <SelectItem value="patient">Patient</SelectItem>
                         <SelectItem value="provider">Healthcare Provider</SelectItem>
                         <SelectItem value="corporate">Corporate HR</SelectItem>
+                        <SelectItem value="admin">System Administrator</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

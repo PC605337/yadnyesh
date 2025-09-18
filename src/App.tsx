@@ -8,6 +8,7 @@ import { AuthPage } from "./components/auth/AuthPage";
 import PatientApp from "./pages/PatientApp";
 import ProviderApp from "./pages/ProviderApp";
 import CorporateApp from "./pages/CorporateApp";
+import AdminApp from "./pages/AdminApp";
 import ConsultationBooking from "./pages/ConsultationBooking";
 import PrescriptionManagement from "./pages/PrescriptionManagement";
 import NotFound from "./pages/NotFound";
@@ -82,6 +83,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={["corporate"]}>
             <CorporateApp />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/admin/*" 
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminApp />
           </ProtectedRoute>
         } 
       />
