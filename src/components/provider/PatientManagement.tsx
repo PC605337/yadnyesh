@@ -49,48 +49,58 @@ export function PatientManagement() {
 
   const fetchPatients = async () => {
     try {
-      const { data: appointmentData, error } = await supabase
+      // First get all appointments for this provider
+      const { data: appointments, error: appointmentsError } = await supabase
         .from('appointments')
-        .select(`
-          patient_id,
-          patient:profiles!inner(
-            user_id,
-            first_name,
-            last_name,
-            email,
-            phone,
-            date_of_birth,
-            address,
-            avatar_url
-          )
-        `)
+        .select('patient_id')
         .eq('provider_id', user?.id);
 
-      if (error) throw error;
+      if (appointmentsError) throw appointmentsError;
 
-      // Group patients and calculate statistics
+      if (!appointments || appointments.length === 0) {
+        setPatients([]);
+        return;
+      }
+
+      // Get unique patient IDs
+      const patientIds = [...new Set(appointments.map(apt => apt.patient_id))];
+
+      // Get patient profiles
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select(`
+          user_id,
+          first_name,
+          last_name,
+          email,
+          phone,
+          date_of_birth,
+          address,
+          avatar_url
+        `)
+        .in('user_id', patientIds);
+
+      if (profilesError) throw profilesError;
+
+      // Calculate statistics for each patient
       const patientMap = new Map();
       
-      appointmentData?.forEach(appointment => {
-        const patientId = appointment.patient_id;
-        if (!patientMap.has(patientId)) {
-          patientMap.set(patientId, {
-            id: patientId,
-            first_name: appointment.patient?.first_name || '',
-            last_name: appointment.patient?.last_name || '',
-            email: appointment.patient?.email || '',
-            phone: appointment.patient?.phone || '',
-            date_of_birth: appointment.patient?.date_of_birth || '',
-            address: appointment.patient?.address || null,
-            avatar_url: appointment.patient?.avatar_url || '',
-            total_appointments: 0,
-            upcoming_appointments: 0,
-            last_appointment: null
-          });
-        }
+      profiles?.forEach(profile => {
+        const patientAppointments = appointments.filter(apt => apt.patient_id === profile.user_id);
         
-        const patient = patientMap.get(patientId);
-        patient.total_appointments++;
+        patientMap.set(profile.user_id, {
+          id: profile.user_id,
+          first_name: profile.first_name || '',
+          last_name: profile.last_name || '',
+          email: profile.email || '',
+          phone: profile.phone || '',
+          date_of_birth: profile.date_of_birth || '',
+          address: profile.address || null,
+          avatar_url: profile.avatar_url || '',
+          total_appointments: patientAppointments.length,
+          upcoming_appointments: 0,
+          last_appointment: null
+        });
       });
 
       setPatients(Array.from(patientMap.values()));

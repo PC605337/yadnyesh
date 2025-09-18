@@ -9,6 +9,7 @@ import { VideoConsultation } from "@/components/telemedicine/VideoConsultation";
 import { AppointmentManagement } from "@/components/appointments/AppointmentManagement";
 import { PrescriptionTracker } from "@/components/prescriptions/PrescriptionTracker";
 import { HealthRecordsManager } from "@/components/records/HealthRecordsManager";
+import { InsuranceManager } from "@/components/insurance/InsuranceManager";
 import { PatientSettings } from "@/components/settings/PatientSettings";
 
 const PatientApp = () => {
