@@ -5,19 +5,18 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Wallet, CreditCard, Download, Search, Filter, TrendingUp, TrendingDown, FileText, Calendar } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 interface Transaction {
   id: string;
-  type: 'debit' | 'credit' | 'refund';
+  transaction_type: 'debit' | 'credit' | 'refund' | 'consultation' | 'prescription' | 'lab_test' | 'wallet_topup';
   amount: number;
-  description: string;
-  serviceType: 'teleconsult' | 'lab_test' | 'hospital_visit' | 'prescription' | 'wallet_topup';
-  timestamp: string;
+  description?: string;
+  payment_method: string;
+  created_at: string;
   status: 'completed' | 'pending' | 'failed';
-  paymentMethod: string;
-  receiptUrl?: string;
-  doctorName?: string;
-  refundReason?: string;
 }
 
 interface WalletBalance {
@@ -27,78 +26,181 @@ interface WalletBalance {
   rewardsPoints: number;
 }
 
+interface WalletData {
+  id: string;
+  balance: number;
+  currency: string;
+  wallet_status: string;
+  kyc_status: string;
+}
+
 export const DigitalWallet = () => {
-  const [walletBalance, setWalletBalance] = useState<WalletBalance>({
-    total: 2450.00,
-    available: 2200.00,
-    locked: 250.00,
-    rewardsPoints: 125
-  });
-
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    {
-      id: 'TXN_001',
-      type: 'debit',
-      amount: 500,
-      description: 'Teleconsultation with Dr. Sharma',
-      serviceType: 'teleconsult',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      status: 'completed',
-      paymentMethod: 'UPI',
-      doctorName: 'Dr. Rajesh Sharma',
-      receiptUrl: '#'
-    },
-    {
-      id: 'TXN_002',
-      type: 'debit',
-      amount: 850,
-      description: 'Blood Test Package',
-      serviceType: 'lab_test',
-      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-      status: 'completed',
-      paymentMethod: 'Credit Card',
-      receiptUrl: '#'
-    },
-    {
-      id: 'TXN_003',
-      type: 'credit',
-      amount: 1000,
-      description: 'Wallet Top-up',
-      serviceType: 'wallet_topup',
-      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'completed',
-      paymentMethod: 'Net Banking'
-    },
-    {
-      id: 'TXN_004',
-      type: 'refund',
-      amount: 300,
-      description: 'Appointment Cancelled',
-      serviceType: 'teleconsult',
-      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'completed',
-      paymentMethod: 'UPI',
-      refundReason: 'Doctor unavailable'
-    }
-  ]);
-
+  const [walletData, setWalletData] = useState<WalletData | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'debit' | 'credit' | 'refund'>('all');
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (user) {
+      fetchWalletData();
+      fetchTransactions();
+    }
+  }, [user]);
+
+  const fetchWalletData = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('digital_wallets')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching wallet:', error);
+        return;
+      }
+
+      if (!data) {
+        // Create wallet if doesn't exist
+        const { data: newWallet, error: createError } = await supabase
+          .from('digital_wallets')
+          .insert([{
+            user_id: user.id,
+            balance: 0,
+            currency: 'INR',
+            wallet_status: 'active',
+            kyc_status: 'pending'
+          }])
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('Error creating wallet:', createError);
+          return;
+        }
+        setWalletData(newWallet);
+      } else {
+        setWalletData(data);
+      }
+    } catch (error) {
+      console.error('Error in fetchWalletData:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTransactions = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('payment_transactions')
+        .select('*')
+        .eq('patient_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error('Error fetching transactions:', error);
+        return;
+      }
+
+      // Transform the data to match our interface
+      const transformedTransactions = (data || []).map(txn => ({
+        id: txn.id,
+        transaction_type: (txn.transaction_type === 'wallet_topup' ? 'credit' : 
+                          txn.transaction_type === 'consultation' ? 'consultation' :
+                          txn.transaction_type === 'prescription' ? 'prescription' :
+                          txn.transaction_type === 'lab_test' ? 'lab_test' :
+                          'debit') as Transaction['transaction_type'],
+        amount: txn.amount,
+        description: `${txn.transaction_type.replace('_', ' ')} - ${txn.payment_method}`,
+        payment_method: txn.payment_method,
+        created_at: txn.created_at,
+        status: txn.status as Transaction['status']
+      }));
+
+      setTransactions(transformedTransactions);
+    } catch (error) {
+      console.error('Error in fetchTransactions:', error);
+    }
+  };
+
+  const addMoney = async (amount: number) => {
+    if (!user || !walletData) return;
+
+    try {
+      // Create transaction record
+      const { error: txnError } = await supabase
+        .from('payment_transactions')
+        .insert([{
+          patient_id: user.id,
+          transaction_type: 'wallet_topup',
+          payment_method: 'upi',
+          amount: amount,
+          transaction_id: `TXN_${Date.now()}`,
+          status: 'completed',
+          payment_gateway: 'razorpay'
+        }]);
+
+      if (txnError) {
+        throw txnError;
+      }
+
+      // Update wallet balance
+      const { error: walletError } = await supabase
+        .from('digital_wallets')
+        .update({ balance: walletData.balance + amount })
+        .eq('user_id', user.id);
+
+      if (walletError) {
+        throw walletError;
+      }
+
+      toast({
+        title: "Money Added Successfully",
+        description: `₹${amount} has been added to your wallet.`,
+      });
+
+      // Refresh data
+      fetchWalletData();
+      fetchTransactions();
+    } catch (error) {
+      console.error('Error adding money:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add money to wallet. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const walletBalance: WalletBalance = {
+    total: walletData?.balance || 0,
+    available: walletData?.balance || 0,
+    locked: 0,
+    rewardsPoints: 125
+  };
 
   const filteredTransactions = transactions.filter(txn => {
-    const matchesSearch = txn.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = (txn.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          txn.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterType === 'all' || txn.type === filterType;
+    const matchesFilter = filterType === 'all' || txn.transaction_type === filterType;
     return matchesSearch && matchesFilter;
   });
 
-  const getTransactionIcon = (serviceType: string) => {
-    switch (serviceType) {
-      case 'teleconsult': return '💻';
+  const getTransactionIcon = (transactionType: string) => {
+    switch (transactionType) {
+      case 'consultation': return '💻';
       case 'lab_test': return '🧪';
-      case 'hospital_visit': return '🏥';
       case 'prescription': return '💊';
-      case 'wallet_topup': return '💰';
+      case 'wallet_topup': 
+      case 'credit': return '💰';
       default: return '💳';
     }
   };
@@ -114,8 +216,12 @@ export const DigitalWallet = () => {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'credit': return 'text-green-600';
-      case 'debit': return 'text-red-600';
+      case 'credit':
+      case 'wallet_topup': return 'text-green-600';
+      case 'debit':
+      case 'consultation':
+      case 'prescription':
+      case 'lab_test': return 'text-red-600';
       case 'refund': return 'text-blue-600';
       default: return 'text-gray-600';
     }
@@ -163,7 +269,7 @@ export const DigitalWallet = () => {
               <div className="text-sm text-muted-foreground">Reward Points</div>
             </div>
             <div className="bg-white p-4 rounded-lg flex items-center justify-center">
-              <Button className="w-full">
+              <Button className="w-full" onClick={() => addMoney(1000)}>
                 <CreditCard className="h-4 w-4 mr-2" />
                 Add Money
               </Button>
@@ -223,40 +329,32 @@ export const DigitalWallet = () => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-start gap-3 flex-1">
                             <div className="text-2xl">
-                              {getTransactionIcon(transaction.serviceType)}
+                              {getTransactionIcon(transaction.transaction_type)}
                             </div>
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-semibold">{transaction.description}</h4>
-                                <Badge className={getStatusColor(transaction.status)}>
-                                  {transaction.status}
-                                </Badge>
-                              </div>
-                              <div className="text-sm text-muted-foreground space-y-1">
-                                <div>ID: {transaction.id}</div>
-                                <div className="flex items-center gap-4">
-                                  <span>{new Date(transaction.timestamp).toLocaleString()}</span>
-                                  <span>via {transaction.paymentMethod}</span>
-                                </div>
-                                {transaction.doctorName && (
-                                  <div>Doctor: {transaction.doctorName}</div>
-                                )}
-                                {transaction.refundReason && (
-                                  <div>Reason: {transaction.refundReason}</div>
-                                )}
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-semibold">{transaction.description}</h4>
+                              <Badge className={getStatusColor(transaction.status)}>
+                                {transaction.status}
+                              </Badge>
+                            </div>
+                            <div className="text-sm text-muted-foreground space-y-1">
+                              <div>ID: {transaction.id}</div>
+                              <div className="flex items-center gap-4">
+                                <span>{new Date(transaction.created_at).toLocaleString()}</span>
+                                <span>via {transaction.payment_method}</span>
                               </div>
                             </div>
                           </div>
+                          </div>
                           <div className="text-right ml-4">
-                            <div className={`text-lg font-semibold ${getTypeColor(transaction.type)}`}>
-                              {transaction.type === 'debit' ? '-' : '+'}₹{transaction.amount.toLocaleString('en-IN')}
+                            <div className={`text-lg font-semibold ${getTypeColor(transaction.transaction_type)}`}>
+                              {transaction.transaction_type === 'credit' || transaction.transaction_type === 'wallet_topup' ? '+' : '-'}₹{transaction.amount.toLocaleString('en-IN')}
                             </div>
-                            {transaction.receiptUrl && (
-                              <Button variant="ghost" size="sm" className="mt-1">
-                                <Download className="h-3 w-3 mr-1" />
-                                Receipt
-                              </Button>
-                            )}
+                            <Button variant="ghost" size="sm" className="mt-1">
+                              <Download className="h-3 w-3 mr-1" />
+                              Receipt
+                            </Button>
                           </div>
                         </div>
                       </CardContent>
