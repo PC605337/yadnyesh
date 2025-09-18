@@ -212,6 +212,48 @@ export type Database = {
         }
         Relationships: []
       }
+      digital_wallets: {
+        Row: {
+          balance: number
+          created_at: string
+          currency: string
+          daily_limit: number | null
+          id: string
+          kyc_documents: Json | null
+          kyc_status: string
+          monthly_limit: number | null
+          updated_at: string
+          user_id: string
+          wallet_status: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          currency?: string
+          daily_limit?: number | null
+          id?: string
+          kyc_documents?: Json | null
+          kyc_status?: string
+          monthly_limit?: number | null
+          updated_at?: string
+          user_id: string
+          wallet_status?: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          currency?: string
+          daily_limit?: number | null
+          id?: string
+          kyc_documents?: Json | null
+          kyc_status?: string
+          monthly_limit?: number | null
+          updated_at?: string
+          user_id?: string
+          wallet_status?: string
+        }
+        Relationships: []
+      }
       fertility_records: {
         Row: {
           basal_body_temperature: Json | null
@@ -919,6 +961,123 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_links: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          description: string
+          expires_at: string
+          id: string
+          link_id: string
+          metadata: Json | null
+          patient_id: string | null
+          payment_transaction_id: string | null
+          provider_id: string
+          qr_code_url: string | null
+          service_type: string
+          status: string
+          updated_at: string
+          used_at: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          description: string
+          expires_at: string
+          id?: string
+          link_id: string
+          metadata?: Json | null
+          patient_id?: string | null
+          payment_transaction_id?: string | null
+          provider_id: string
+          qr_code_url?: string | null
+          service_type: string
+          status?: string
+          updated_at?: string
+          used_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          description?: string
+          expires_at?: string
+          id?: string
+          link_id?: string
+          metadata?: Json | null
+          patient_id?: string | null
+          payment_transaction_id?: string | null
+          provider_id?: string
+          qr_code_url?: string | null
+          service_type?: string
+          status?: string
+          updated_at?: string
+          used_at?: string | null
+        }
+        Relationships: []
+      }
+      payment_transactions: {
+        Row: {
+          amount: number
+          appointment_id: string | null
+          completed_at: string | null
+          created_at: string
+          currency: string
+          gateway_response: Json | null
+          gateway_transaction_id: string | null
+          id: string
+          metadata: Json | null
+          patient_id: string
+          payment_gateway: string
+          payment_method: string
+          provider_id: string | null
+          status: string
+          transaction_id: string
+          transaction_type: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          appointment_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          gateway_response?: Json | null
+          gateway_transaction_id?: string | null
+          id?: string
+          metadata?: Json | null
+          patient_id: string
+          payment_gateway: string
+          payment_method: string
+          provider_id?: string | null
+          status?: string
+          transaction_id: string
+          transaction_type: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          appointment_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          gateway_response?: Json | null
+          gateway_transaction_id?: string | null
+          id?: string
+          metadata?: Json | null
+          patient_id?: string
+          payment_gateway?: string
+          payment_method?: string
+          provider_id?: string | null
+          status?: string
+          transaction_id?: string
+          transaction_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pediatric_records: {
         Row: {
           allergies: Json | null
@@ -1288,6 +1447,48 @@ export type Database = {
           language?: string
           translated_text?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string
+          description: string
+          id: string
+          metadata: Json | null
+          reference_id: string | null
+          reference_type: string | null
+          transaction_type: string
+          user_id: string
+          wallet_id: string
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string
+          description: string
+          id?: string
+          metadata?: Json | null
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type: string
+          user_id: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          description?: string
+          id?: string
+          metadata?: Json | null
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type?: string
+          user_id?: string
+          wallet_id?: string
         }
         Relationships: []
       }
