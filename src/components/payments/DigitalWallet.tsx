@@ -135,31 +135,25 @@ export const DigitalWallet = () => {
     if (!user || !walletData) return;
 
     try {
-      // Create transaction record
-      const { error: txnError } = await supabase
-        .from('payment_transactions')
-        .insert([{
-          patient_id: user.id,
-          transaction_type: 'wallet_topup',
-          payment_method: 'upi',
+      // Call the payment processing edge function
+      const { data, error } = await supabase.functions.invoke('process-payment', {
+        body: {
           amount: amount,
-          transaction_id: `TXN_${Date.now()}`,
-          status: 'completed',
-          payment_gateway: 'razorpay'
-        }]);
+          currency: 'INR',
+          patientId: user.id,
+          transactionType: 'wallet_topup',
+          paymentMethod: 'upi',
+          customerEmail: user.email,
+          description: `Wallet top-up of ₹${amount}`
+        }
+      });
 
-      if (txnError) {
-        throw txnError;
+      if (error) {
+        throw error;
       }
 
-      // Update wallet balance
-      const { error: walletError } = await supabase
-        .from('digital_wallets')
-        .update({ balance: walletData.balance + amount })
-        .eq('user_id', user.id);
-
-      if (walletError) {
-        throw walletError;
+      if (!data.success) {
+        throw new Error(data.error || 'Payment processing failed');
       }
 
       toast({
