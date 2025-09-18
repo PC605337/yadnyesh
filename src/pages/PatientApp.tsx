@@ -9,7 +9,7 @@ import { VideoConsultation } from "@/components/telemedicine/VideoConsultation";
 import { AppointmentManagement } from "@/components/appointments/AppointmentManagement";
 import { PrescriptionTracker } from "@/components/prescriptions/PrescriptionTracker";
 import { HealthRecordsManager } from "@/components/records/HealthRecordsManager";
-import { InsuranceManager } from "@/components/insurance/InsuranceManager";
+import { PatientSettings } from "@/components/settings/PatientSettings";
 
 const PatientApp = () => {
   return (
@@ -25,7 +25,7 @@ const PatientApp = () => {
         <Route path="community" element={<CommunityForum />} />
         <Route path="pharmacy" element={<PharmacyIntegration />} />
         <Route path="cost-prediction" element={<CostPrediction />} />
-        <Route path="settings" element={<div>Settings Coming Soon</div>} />
+        <Route path="settings" element={<PatientSettings />} />
       </Routes>
     </HealthcareLayout>
   );
