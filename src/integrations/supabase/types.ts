@@ -1417,6 +1417,63 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_verification_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          documents: Json | null
+          experience_years: number
+          id: string
+          license_number: string
+          medical_college: string
+          nmr_id: string
+          nmr_response_data: Json | null
+          nmr_verification_status: string
+          provider_id: string
+          specializations: string[]
+          updated_at: string
+          verification_completed_at: string | null
+          verification_status: string
+          verified_by: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          documents?: Json | null
+          experience_years: number
+          id?: string
+          license_number: string
+          medical_college: string
+          nmr_id: string
+          nmr_response_data?: Json | null
+          nmr_verification_status?: string
+          provider_id: string
+          specializations?: string[]
+          updated_at?: string
+          verification_completed_at?: string | null
+          verification_status?: string
+          verified_by?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          documents?: Json | null
+          experience_years?: number
+          id?: string
+          license_number?: string
+          medical_college?: string
+          nmr_id?: string
+          nmr_response_data?: Json | null
+          nmr_verification_status?: string
+          provider_id?: string
+          specializations?: string[]
+          updated_at?: string
+          verification_completed_at?: string | null
+          verification_status?: string
+          verified_by?: string | null
+        }
+        Relationships: []
+      }
       translations: {
         Row: {
           created_at: string
@@ -1449,6 +1506,47 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      verification_documents: {
+        Row: {
+          document_type: string
+          file_name: string
+          file_size: number | null
+          file_url: string
+          id: string
+          mime_type: string | null
+          uploaded_at: string
+          verification_request_id: string
+        }
+        Insert: {
+          document_type: string
+          file_name: string
+          file_size?: number | null
+          file_url: string
+          id?: string
+          mime_type?: string | null
+          uploaded_at?: string
+          verification_request_id: string
+        }
+        Update: {
+          document_type?: string
+          file_name?: string
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          mime_type?: string | null
+          uploaded_at?: string
+          verification_request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_documents_verification_request_id_fkey"
+            columns: ["verification_request_id"]
+            isOneToOne: false
+            referencedRelation: "provider_verification_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wallet_transactions: {
         Row: {
