@@ -12,6 +12,8 @@ import AdminApp from "./pages/AdminApp";
 import ConsultationBooking from "./pages/ConsultationBooking";
 import PrescriptionManagement from "./pages/PrescriptionManagement";
 import NotFound from "./pages/NotFound";
+import TermsOfService from "./pages/legal/TermsOfService";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
