@@ -18,6 +18,8 @@ import { DigitalWallet } from "@/components/payments/DigitalWallet";
 import { MedicalDocumentUpload } from "@/components/uploads/MedicalDocumentUpload";
 import { ConsentManager } from "@/components/compliance/ConsentManager";
 import HelpSupport from "@/components/support/HelpSupport";
+import { PredictiveAnalytics } from "@/components/analytics/PredictiveAnalytics";
+import { AdvancedSecurity } from "@/components/security/AdvancedSecurity";
 
 const PatientApp = () => {
   return (
@@ -38,6 +40,8 @@ const PatientApp = () => {
         <Route path="upload-documents" element={<MedicalDocumentUpload />} />
         <Route path="consent-manager" element={<ConsentManager />} />
         <Route path="help-support" element={<HelpSupport />} />
+        <Route path="analytics" element={<PredictiveAnalytics />} />
+        <Route path="security" element={<AdvancedSecurity />} />
         <Route path="settings" element={<PatientSettings />} />
       </Routes>
     </HealthcareLayout>

@@ -1,307 +1,81 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { 
-  Shield, 
-  Fingerprint, 
-  Key,
-  Smartphone,
-  Eye,
-  EyeOff,
-  Lock,
-  Unlock,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Globe,
-  Wifi,
-  Clock,
-  MapPin,
-  Monitor,
-  RefreshCw,
-  QrCode,
-  Copy,
-  Download,
-  Activity
-} from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import React, { useState } from 'react';
+import { Shield, Smartphone, Key, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 
-interface SecuritySetting {
-  id: string;
-  name: string;
-  description: string;
-  enabled: boolean;
-  critical: boolean;
-}
-
-interface LoginSession {
-  id: string;
-  device: string;
-  location: string;
-  ipAddress: string;
-  loginTime: Date;
-  lastActivity: Date;
-  current: boolean;
-  trusted: boolean;
-}
-
-interface SecurityAlert {
-  id: string;
-  type: 'login' | 'data_access' | 'permission_change' | 'suspicious_activity';
-  severity: 'low' | 'medium' | 'high';
-  message: string;
-  timestamp: Date;
-  resolved: boolean;
-}
-
-export function AdvancedSecurity() {
+export const AdvancedSecurity = () => {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
-  const [showBackupCodes, setShowBackupCodes] = useState(false);
-  const [qrCode, setQrCode] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  
-  const [securitySettings, setSecuritySettings] = useState<SecuritySetting[]>([
-    {
-      id: '1',
-      name: 'Auto-logout on inactivity',
-      description: 'Automatically log out after 30 minutes of inactivity',
-      enabled: true,
-      critical: false
-    },
-    {
-      id: '2',
-      name: 'Data encryption at rest',
-      description: 'Encrypt all stored health records and personal data',
-      enabled: true,
-      critical: true
-    },
-    {
-      id: '3',
-      name: 'Login notifications',
-      description: 'Send email/SMS notifications for new device logins',
-      enabled: true,
-      critical: false
-    },
-    {
-      id: '4',
-      name: 'IP address restrictions',
-      description: 'Only allow logins from trusted IP addresses',
-      enabled: false,
-      critical: false
-    },
-    {
-      id: '5',
-      name: 'Data access logging',
-      description: 'Log all access to sensitive health information',
-      enabled: true,
-      critical: true
-    },
-    {
-      id: '6',
-      name: 'HIPAA compliance mode',
-      description: 'Enable enhanced privacy protections for healthcare data',
-      enabled: true,
-      critical: true
-    }
-  ]);
-
-  const [activeSessions, setActiveSessions] = useState<LoginSession[]>([
-    {
-      id: '1',
-      device: 'Chrome on MacBook Pro',
-      location: 'Mumbai, India',
-      ipAddress: '192.168.1.100',
-      loginTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      lastActivity: new Date(Date.now() - 5 * 60 * 1000),
-      current: true,
-      trusted: true
-    },
-    {
-      id: '2',
-      device: 'Safari on iPhone 15',
-      location: 'Mumbai, India',
-      ipAddress: '192.168.1.101',
-      loginTime: new Date(Date.now() - 6 * 60 * 60 * 1000),
-      lastActivity: new Date(Date.now() - 30 * 60 * 1000),
-      current: false,
-      trusted: true
-    },
-    {
-      id: '3',
-      device: 'Chrome on Windows',
-      location: 'Delhi, India',
-      ipAddress: '203.192.12.45',
-      loginTime: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      lastActivity: new Date(Date.now() - 12 * 60 * 60 * 1000),
-      current: false,
-      trusted: false
-    }
-  ]);
-
-  const [securityAlerts, setSecurityAlerts] = useState<SecurityAlert[]>([
-    {
-      id: '1',
-      type: 'login',
-      severity: 'medium',
-      message: 'New login from unrecognized device in Delhi',
-      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      resolved: false
-    },
-    {
-      id: '2',
-      type: 'data_access',
-      severity: 'low',
-      message: 'Health records accessed from mobile app',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      resolved: true
-    },
-    {
-      id: '3',
-      type: 'suspicious_activity',
-      severity: 'high',
-      message: 'Multiple failed login attempts detected',
-      timestamp: new Date(Date.now() - 30 * 60 * 1000),
-      resolved: false
-    }
-  ]);
-
-  const backupCodes = [
-    '8D2B-X4F9', '9K3L-P7Q2', '5M8N-R6T1', 
-    '7A4C-Y9Z3', '2E6H-W8V5', '1B3F-S5G8'
-  ];
-
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [securityScore] = useState(75);
   const { toast } = useToast();
 
-  const enable2FA = async () => {
-    // Simulate QR code generation
-    setQrCode("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==");
-    setTwoFactorEnabled(true);
-    
-    toast({
-      title: "2FA Setup Started",
-      description: "Scan the QR code with your authenticator app",
-    });
+  const calculatePasswordStrength = (password: string) => {
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (/[a-z]/.test(password)) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    return Math.min(strength, 100);
   };
 
-  const verify2FA = () => {
-    if (verificationCode.length === 6) {
-      toast({
-        title: "2FA Enabled",
-        description: "Two-factor authentication has been successfully enabled",
-      });
-      setQrCode("");
-      setVerificationCode("");
-    }
+  const handlePasswordChange = (password: string) => {
+    setPasswordStrength(calculatePasswordStrength(password));
+  };
+
+  const enable2FA = async () => {
+    setTwoFactorEnabled(true);
+    toast({
+      title: "Two-Factor Authentication Enabled",
+      description: "Your account is now more secure with 2FA enabled.",
+    });
   };
 
   const enableBiometric = async () => {
-    try {
-      // Check if biometric authentication is available
-      if (!window.PublicKeyCredential) {
-        throw new Error('Biometric authentication not supported');
-      }
-
-      setBiometricEnabled(true);
-      toast({
-        title: "Biometric Authentication Enabled",
-        description: "You can now use fingerprint or face recognition to login",
-      });
-    } catch (error) {
-      toast({
-        title: "Biometric Setup Failed",
-        description: "Your device doesn't support biometric authentication",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const toggleSecuritySetting = (settingId: string) => {
-    setSecuritySettings(prev => prev.map(setting => 
-      setting.id === settingId 
-        ? { ...setting, enabled: !setting.enabled }
-        : setting
-    ));
-  };
-
-  const terminateSession = (sessionId: string) => {
-    setActiveSessions(prev => prev.filter(session => session.id !== sessionId));
+    setBiometricEnabled(true);
     toast({
-      title: "Session Terminated",
-      description: "The selected session has been terminated",
+      title: "Biometric Authentication Enabled",
+      description: "You can now use fingerprint or face recognition to login.",
     });
   };
 
-  const resolveAlert = (alertId: string) => {
-    setSecurityAlerts(prev => prev.map(alert => 
-      alert.id === alertId 
-        ? { ...alert, resolved: true }
-        : alert
-    ));
+  const getPasswordStrengthColor = (strength: number) => {
+    if (strength < 40) return 'bg-destructive';
+    if (strength < 70) return 'bg-yellow-500';
+    return 'bg-green-500';
   };
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'high': return 'text-red-600 bg-red-50 border-red-200';
-      case 'medium': return 'text-orange-600 bg-orange-50 border-orange-200';
-      default: return 'text-blue-600 bg-blue-50 border-blue-200';
-    }
-  };
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Copied",
-      description: "Backup code copied to clipboard",
-    });
-  };
-
-  const downloadBackupCodes = () => {
-    const content = `Healthcare App - Backup Codes\n\nGenerated: ${new Date().toLocaleDateString()}\n\n${backupCodes.join('\n')}\n\nStore these codes safely. Each code can only be used once.`;
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'backup-codes.txt';
-    a.click();
+  const getPasswordStrengthText = (strength: number) => {
+    if (strength < 40) return 'Weak';
+    if (strength < 70) return 'Medium';
+    return 'Strong';
   };
 
   return (
     <div className="space-y-6">
-      {/* Security Overview */}
+      {/* Security Score */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Security Overview
+            Security Score
           </CardTitle>
           <CardDescription>
-            Monitor and manage your account security settings
+            Your overall account security rating
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-              <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
-              <p className="font-semibold text-green-800">Secure</p>
-              <p className="text-sm text-green-600">Account protected</p>
-            </div>
-            
-            <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <Shield className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-              <p className="font-semibold text-blue-800">98% Score</p>
-              <p className="text-sm text-blue-600">Security rating</p>
-            </div>
-            
-            <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-              <AlertTriangle className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-              <p className="font-semibold text-orange-800">2 Alerts</p>
-              <p className="text-sm text-orange-600">Need attention</p>
-            </div>
+          <div className="text-3xl font-bold text-green-600">
+            {securityScore}/100
           </div>
+          <p className="text-sm text-muted-foreground">Security Score</p>
         </CardContent>
       </Card>
 
@@ -309,7 +83,7 @@ export function AdvancedSecurity() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Key className="h-5 w-5" />
+            <Smartphone className="h-5 w-5" />
             Two-Factor Authentication
           </CardTitle>
           <CardDescription>
@@ -319,91 +93,23 @@ export function AdvancedSecurity() {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Authenticator App</p>
+              <p className="font-medium">Enable 2FA</p>
               <p className="text-sm text-muted-foreground">
-                Use an app like Google Authenticator or Authy
+                Secure your account with SMS or authenticator app
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant={twoFactorEnabled ? 'default' : 'secondary'}>
-                {twoFactorEnabled ? 'Enabled' : 'Disabled'}
-              </Badge>
-              {!twoFactorEnabled ? (
-                <Button onClick={enable2FA}>Enable</Button>
-              ) : (
-                <Button variant="outline" onClick={() => setTwoFactorEnabled(false)}>
-                  Disable
-                </Button>
-              )}
-            </div>
+            <Switch
+              checked={twoFactorEnabled}
+              onCheckedChange={twoFactorEnabled ? setTwoFactorEnabled : enable2FA}
+            />
           </div>
-
-          {qrCode && (
-            <div className="p-4 bg-muted/20 rounded-lg">
-              <div className="flex items-start gap-4">
-                <div className="bg-white p-4 rounded-lg">
-                  <QrCode className="h-32 w-32" />
-                </div>
-                <div className="flex-1 space-y-3">
-                  <p className="font-medium">Setup Instructions:</p>
-                  <ol className="text-sm space-y-1 list-decimal list-inside">
-                    <li>Download an authenticator app</li>
-                    <li>Scan this QR code with the app</li>
-                    <li>Enter the 6-digit code below</li>
-                  </ol>
-                  
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Enter 6-digit code"
-                      value={verificationCode}
-                      onChange={(e) => setVerificationCode(e.target.value)}
-                      maxLength={6}
-                    />
-                    <Button onClick={verify2FA} disabled={verificationCode.length !== 6}>
-                      Verify
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
           {twoFactorEnabled && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="font-medium">Backup Codes</p>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setShowBackupCodes(!showBackupCodes)}
-                >
-                  {showBackupCodes ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  {showBackupCodes ? 'Hide' : 'Show'} Codes
-                </Button>
-              </div>
-              
-              {showBackupCodes && (
-                <div className="p-4 bg-muted/20 rounded-lg">
-                  <div className="flex justify-between items-center mb-3">
-                    <p className="text-sm font-medium">Store these codes safely</p>
-                    <Button size="sm" variant="outline" onClick={downloadBackupCodes}>
-                      <Download className="h-3 w-3 mr-1" />
-                      Download
-                    </Button>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {backupCodes.map((code, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 bg-background rounded border">
-                        <code className="text-sm font-mono flex-1">{code}</code>
-                        <Button size="sm" variant="ghost" onClick={() => copyToClipboard(code)}>
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+            <Alert>
+              <CheckCircle className="h-4 w-4" />
+              <AlertDescription>
+                Two-factor authentication is active. You'll receive a code via SMS when logging in.
+              </AlertDescription>
+            </Alert>
           )}
         </CardContent>
       </Card>
@@ -412,7 +118,7 @@ export function AdvancedSecurity() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Fingerprint className="h-5 w-5" />
+            <Key className="h-5 w-5" />
             Biometric Authentication
           </CardTitle>
           <CardDescription>
@@ -422,162 +128,86 @@ export function AdvancedSecurity() {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Fingerprint/Face ID</p>
+              <p className="font-medium">Enable Biometric Login</p>
               <p className="text-sm text-muted-foreground">
-                Quick and secure biometric login
+                Login with your fingerprint or face
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant={biometricEnabled ? 'default' : 'secondary'}>
-                {biometricEnabled ? 'Enabled' : 'Disabled'}
-              </Badge>
-              {!biometricEnabled ? (
-                <Button onClick={enableBiometric}>Enable</Button>
-              ) : (
-                <Button variant="outline" onClick={() => setBiometricEnabled(false)}>
-                  Disable
-                </Button>
-              )}
+            <Switch
+              checked={biometricEnabled}
+              onCheckedChange={biometricEnabled ? setBiometricEnabled : enableBiometric}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Password Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Password Management</CardTitle>
+          <CardDescription>
+            Update your password and view strength indicators
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="current-password">Current Password</Label>
+            <div className="relative">
+              <Input
+                id="current-password"
+                type={showCurrentPassword ? "text" : "password"}
+                placeholder="Enter current password"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-1/2 -translate-y-1/2"
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+              >
+                {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Security Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lock className="h-5 w-5" />
-            Security Settings
-          </CardTitle>
-          <CardDescription>
-            Configure advanced security options
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {securitySettings.map((setting) => (
-              <div key={setting.id} className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-start gap-3">
-                  {setting.critical && <AlertTriangle className="h-4 w-4 text-orange-500 mt-1" />}
-                  <div>
-                    <p className="font-medium">{setting.name}</p>
-                    <p className="text-sm text-muted-foreground">{setting.description}</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={setting.enabled}
-                  onCheckedChange={() => toggleSecuritySetting(setting.id)}
+          <div className="space-y-2">
+            <Label htmlFor="new-password">New Password</Label>
+            <div className="relative">
+              <Input
+                id="new-password"
+                type={showNewPassword ? "text" : "password"}
+                placeholder="Enter new password"
+                onChange={(e) => handlePasswordChange(e.target.value)}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-1/2 -translate-y-1/2"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+              >
+                {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-sm">
+                <span>Password Strength:</span>
+                <span className={passwordStrength < 40 ? 'text-destructive' : passwordStrength < 70 ? 'text-yellow-600' : 'text-green-600'}>
+                  {getPasswordStrengthText(passwordStrength)}
+                </span>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all ${getPasswordStrengthColor(passwordStrength)}`}
+                  style={{ width: `${passwordStrength}%` }}
                 />
               </div>
-            ))}
+            </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Active Sessions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Monitor className="h-5 w-5" />
-            Active Sessions
-          </CardTitle>
-          <CardDescription>
-            Monitor and manage your active login sessions
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {activeSessions.map((session) => (
-              <div key={session.id} className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-start gap-3">
-                  <Monitor className="h-4 w-4 mt-1" />
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium">{session.device}</p>
-                      {session.current && <Badge variant="default">Current</Badge>}
-                      {session.trusted && <Badge variant="secondary">Trusted</Badge>}
-                    </div>
-                    <div className="text-sm text-muted-foreground space-y-1">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {session.location}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Globe className="h-3 w-3" />
-                          {session.ipAddress}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          Login: {session.loginTime.toLocaleString()}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Activity className="h-3 w-3" />
-                          Last: {session.lastActivity.toLocaleString()}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {!session.current && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => terminateSession(session.id)}
-                  >
-                    Terminate
-                  </Button>
-                )}
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Security Alerts */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5" />
-            Security Alerts
-          </CardTitle>
-          <CardDescription>
-            Recent security events and notifications
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {securityAlerts.map((alert) => (
-              <div key={alert.id} className={`p-3 rounded-lg border ${getSeverityColor(alert.severity)}`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle className="h-4 w-4 mt-1" />
-                    <div>
-                      <p className="font-medium">{alert.message}</p>
-                      <p className="text-sm opacity-80">
-                        {alert.timestamp.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {alert.resolved ? (
-                      <Badge variant="secondary">Resolved</Badge>
-                    ) : (
-                      <Button size="sm" onClick={() => resolveAlert(alert.id)}>
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        Resolve
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Button className="w-full">Update Password</Button>
         </CardContent>
       </Card>
     </div>
   );
-}
+};

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { RealTimeNotifications } from "@/components/notifications/RealTimeNotifications";
 import { 
   Bell, 
   Menu, 
@@ -49,6 +50,8 @@ const navigationByRole = {
     { name: "Upload Documents", href: "/patient/upload-documents", icon: Upload },
     { name: "Insurance", href: "/patient/insurance", icon: Shield },
     { name: "Wellness", href: "/patient/wellness", icon: Heart },
+    { name: "Analytics", href: "/patient/analytics", icon: TrendingUp },
+    { name: "Security", href: "/patient/security", icon: Shield },
     { name: "Payments", href: "/patient/payments", icon: CreditCard },
     { name: "Wallet", href: "/patient/wallet", icon: Wallet },
     { name: "Privacy & Consent", href: "/patient/consent-manager", icon: Shield },
@@ -207,12 +210,7 @@ export function HealthcareLayout({ children }: HealthcareLayoutProps) {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="h-5 w-5" />
-                <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  3
-                </Badge>
-              </Button>
+              <RealTimeNotifications />
               
               {userRole === "provider" && (
                 <Badge variant="outline" className="bg-healing-green/10 text-healing-green border-healing-green">
