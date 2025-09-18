@@ -7,6 +7,7 @@ import { ScheduleManagement } from "@/components/provider/ScheduleManagement";
 import { ConsultationManagement } from "@/components/provider/ConsultationManagement";
 import { EarningsDashboard } from "@/components/provider/EarningsDashboard";
 import { ProviderSettings } from "@/components/settings/ProviderSettings";
+import { HospitalPOS } from "@/components/payments/HospitalPOS";
 
 const ProviderApp = () => {
   return (
@@ -19,6 +20,7 @@ const ProviderApp = () => {
         <Route path="earnings" element={<EarningsDashboard />} />
         <Route path="community" element={<CommunityForum />} />
         <Route path="settings" element={<ProviderSettings />} />
+        <Route path="pos-payment" element={<HospitalPOS amount={1500} onSuccess={() => console.log('POS payment completed')} />} />
       </Routes>
     </HealthcareLayout>
   );
