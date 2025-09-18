@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
-import { AuthPage } from "./components/auth/AuthPage";
+import Auth from "./pages/Auth";
 import PatientApp from "./pages/PatientApp";
 import ProviderApp from "./pages/ProviderApp";
 import CorporateApp from "./pages/CorporateApp";
@@ -56,7 +56,7 @@ const AppRoutes = () => {
   if (!user || !profile) {
     return (
       <Routes>
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth" element={<Auth />} />
         <Route path="*" element={<Navigate to="/auth" replace />} />
       </Routes>
     );
