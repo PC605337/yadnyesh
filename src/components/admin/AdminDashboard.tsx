@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DemoDataPopulator } from "./DemoDataPopulator";
 import { 
   Users, 
   Building2, 
@@ -301,6 +302,9 @@ export function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Demo Data Populator */}
+        <DemoDataPopulator />
+        
         {/* System Metrics */}
         <Card>
           <CardHeader>
@@ -372,7 +376,7 @@ export function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Recent Activities */}
+        {/* Recent Activities - moved to third position */}
         <Card>
           <CardHeader>
             <CardTitle>Recent Activities</CardTitle>
