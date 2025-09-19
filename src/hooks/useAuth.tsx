@@ -62,7 +62,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           // Fetch user profile with better error handling
           const fetchProfile = async () => {
             try {
-              const { data: profileData, error } = await supabase
+              // First fetch the profile
+              const { data: profileData, error: profileError } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('user_id', session.user.id)
@@ -70,8 +71,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
               if (!mounted) return;
 
-              if (error) {
-                console.error('Error fetching profile:', error);
+              // Then fetch user roles to determine primary role
+              const { data: userRoles, error: rolesError } = await supabase
+                .from('user_roles')
+                .select('role')
+                .eq('user_id', session.user.id)
+                .eq('is_active', true);
+
+              // Determine primary role (admin takes precedence)
+              let primaryRole = 'patient';
+              if (userRoles && userRoles.length > 0) {
+                if (userRoles.some(r => r.role === 'admin')) {
+                  primaryRole = 'admin';
+                } else if (userRoles.some(r => r.role === 'corporate')) {
+                  primaryRole = 'corporate';
+                } else if (userRoles.some(r => r.role === 'provider')) {
+                  primaryRole = 'provider';
+                } else {
+                  primaryRole = userRoles[0].role;
+                }
+              }
+
+              if (profileError || !profileData) {
+                console.error('Error fetching profile:', profileError);
                 // Create a basic profile if one doesn't exist
                 setProfile({
                   id: session.user.id,
@@ -79,12 +101,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                   first_name: session.user.user_metadata?.first_name || null,
                   last_name: session.user.user_metadata?.last_name || null,
                   email: session.user.email || null,
-                  role: session.user.user_metadata?.role || 'patient',
+                  role: primaryRole,
                   phone: session.user.user_metadata?.phone || null,
                   avatar_url: null,
                 });
               } else {
-                setProfile(profileData);
+                // Update profile with current role
+                setProfile({
+                  ...profileData,
+                  role: primaryRole
+                });
               }
             } catch (error) {
               console.error('Profile fetch error:', error);
@@ -96,7 +122,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                   first_name: session.user.user_metadata?.first_name || null,
                   last_name: session.user.user_metadata?.last_name || null,
                   email: session.user.email || null,
-                  role: session.user.user_metadata?.role || 'patient',
+                  role: 'patient',
                   phone: session.user.user_metadata?.phone || null,
                   avatar_url: null,
                 });
@@ -127,6 +153,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          // First fetch the profile
           const { data: profileData, error } = await supabase
             .from('profiles')
             .select('*')
@@ -135,7 +162,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
           if (!mounted) return;
 
-          if (error) {
+          // Then fetch user roles to determine primary role
+          const { data: userRoles, error: rolesError } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .eq('is_active', true);
+
+          // Determine primary role (admin takes precedence)
+          let primaryRole = 'patient';
+          if (userRoles && userRoles.length > 0) {
+            if (userRoles.some(r => r.role === 'admin')) {
+              primaryRole = 'admin';
+            } else if (userRoles.some(r => r.role === 'corporate')) {
+              primaryRole = 'corporate';
+            } else if (userRoles.some(r => r.role === 'provider')) {
+              primaryRole = 'provider';
+            } else {
+              primaryRole = userRoles[0].role;
+            }
+          }
+
+          if (error || !profileData) {
             console.error('Error fetching profile:', error);
             // Create fallback profile
             setProfile({
@@ -144,12 +192,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               first_name: session.user.user_metadata?.first_name || null,
               last_name: session.user.user_metadata?.last_name || null,
               email: session.user.email || null,
-              role: session.user.user_metadata?.role || 'patient',
+              role: primaryRole,
               phone: session.user.user_metadata?.phone || null,
               avatar_url: null,
             });
           } else {
-            setProfile(profileData);
+            // Update profile with current role
+            setProfile({
+              ...profileData,
+              role: primaryRole
+            });
           }
         }
       } catch (error) {
