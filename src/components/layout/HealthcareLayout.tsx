@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { RoleSwitcher } from "./RoleSwitcher";
 
 interface NavigationItem {
   name: string;
@@ -210,6 +211,7 @@ export function HealthcareLayout({ children }: HealthcareLayoutProps) {
             </div>
 
             <div className="flex items-center space-x-4">
+              <RoleSwitcher />
               <RealTimeNotifications />
               
               {userRole === "provider" && (

@@ -35,8 +35,18 @@ const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode,
     return <Navigate to="/auth" replace />;
   }
   
-  if (allowedRoles && !allowedRoles.includes(profile.role)) {
-    return <Navigate to={`/${profile.role}`} replace />;
+  // For role-specific routes, check if user has access to ANY allowed role
+  // This allows users with multiple roles to access different sections
+  if (allowedRoles) {
+    // Allow admin to access all routes
+    if (profile.role === 'admin') {
+      return <>{children}</>;
+    }
+    
+    // For non-admin users, check if their current role is in allowed roles
+    if (!allowedRoles.includes(profile.role)) {
+      return <Navigate to={`/${profile.role}`} replace />;
+    }
   }
   
   return <>{children}</>;
@@ -99,7 +109,7 @@ const AppRoutes = () => {
       <Route 
         path="/provider/*" 
         element={
-          <ProtectedRoute allowedRoles={["provider"]}>
+          <ProtectedRoute allowedRoles={["provider", "admin"]}>
             <ProviderApp />
           </ProtectedRoute>
         } 
@@ -107,7 +117,7 @@ const AppRoutes = () => {
       <Route 
         path="/corporate/*" 
         element={
-          <ProtectedRoute allowedRoles={["corporate"]}>
+          <ProtectedRoute allowedRoles={["corporate", "admin"]}>
             <CorporateApp />
           </ProtectedRoute>
         } 
