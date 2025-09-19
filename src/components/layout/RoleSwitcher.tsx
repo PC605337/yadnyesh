@@ -8,7 +8,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, UserCheck, Shield, Building2 } from "lucide-react";
+import { 
+  ChevronDown, 
+  UserCheck, 
+  Shield, 
+  Building2, 
+  Heart, 
+  Users, 
+  CreditCard,
+  Briefcase 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,25 +33,44 @@ const roleConfig = {
     label: "Admin", 
     icon: Shield, 
     path: "/admin",
-    color: "bg-red-500 text-red-50"
+    color: "bg-red-500 text-red-50",
+    description: "System administration and management"
   },
   provider: { 
-    label: "Provider", 
-    icon: UserCheck, 
+    label: "Healthcare Provider", 
+    icon: Heart, 
     path: "/provider",
-    color: "bg-blue-500 text-blue-50"
+    color: "bg-blue-500 text-blue-50",
+    description: "Doctor, nurse, or medical professional"
   },
   corporate: { 
     label: "Corporate", 
     icon: Building2, 
     path: "/corporate",
-    color: "bg-purple-500 text-purple-50"
+    color: "bg-purple-500 text-purple-50",
+    description: "Corporate healthcare management"
   },
   patient: { 
     label: "Patient", 
-    icon: UserCheck, 
+    icon: Users, 
     path: "/patient",
-    color: "bg-green-500 text-green-50"
+    color: "bg-green-500 text-green-50",
+    description: "Patient healthcare services"
+  },
+  // Future roles can be added here
+  insurance: { 
+    label: "Insurance", 
+    icon: CreditCard, 
+    path: "/insurance",
+    color: "bg-orange-500 text-orange-50",
+    description: "Insurance management and claims"
+  },
+  pharmacy: { 
+    label: "Pharmacy", 
+    icon: Briefcase, 
+    path: "/pharmacy",
+    color: "bg-teal-500 text-teal-50",
+    description: "Pharmacy operations and prescriptions"
   },
 };
 
@@ -71,7 +99,13 @@ export const RoleSwitcher = () => {
         .eq('is_active', true);
 
       if (error) throw error;
-      setAvailableRoles(data || []);
+      
+      // Filter roles to only include those that have valid configurations
+      const validRoles = (data || []).filter(role => 
+        roleConfig[role.role as keyof typeof roleConfig]
+      );
+      
+      setAvailableRoles(validRoles);
     } catch (error) {
       console.error('Error fetching roles:', error);
     }
@@ -117,7 +151,7 @@ export const RoleSwitcher = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end" 
-        className="w-48 bg-background/95 backdrop-blur-sm border-border/50 shadow-lg"
+        className="w-64 bg-background/95 backdrop-blur-sm border-border/50 shadow-lg"
       >
         {availableRoles.map((userRole) => {
           const config = roleConfig[userRole.role as keyof typeof roleConfig];
@@ -129,17 +163,26 @@ export const RoleSwitcher = () => {
               key={userRole.role}
               onClick={() => switchRole(userRole.role)}
               className={cn(
-                "flex items-center gap-2 cursor-pointer",
+                "flex items-start gap-3 cursor-pointer p-3",
                 isActive && "bg-muted font-medium"
               )}
             >
-              <Icon className="h-4 w-4" />
-              <span>{config?.label || userRole.role}</span>
-              {isActive && (
-                <Badge variant="secondary" className="ml-auto text-xs">
-                  Active
-                </Badge>
-              )}
+              <Icon className="h-4 w-4 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">{config?.label || userRole.role}</span>
+                  {isActive && (
+                    <Badge variant="secondary" className="text-xs">
+                      Active
+                    </Badge>
+                  )}
+                </div>
+                {config?.description && (
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                    {config.description}
+                  </p>
+                )}
+              </div>
             </DropdownMenuItem>
           );
         })}
