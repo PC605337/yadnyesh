@@ -7,7 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
+import { validatePassword, getPasswordStrengthColor, getPasswordStrengthText } from "@/utils/passwordValidation";
 
 export function AuthPage() {
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,13 @@ export function AuthPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState("");
+  const [passwordValidation, setPasswordValidation] = useState(validatePassword(""));
   const { toast } = useToast();
+
+  const handlePasswordChange = (newPassword: string) => {
+    setPassword(newPassword);
+    setPasswordValidation(validatePassword(newPassword));
+  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +60,15 @@ export function AuthPage() {
       toast({
         title: "Error",
         description: "Please select a role",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!passwordValidation.isValid) {
+      toast({
+        title: "Password Too Weak",
+        description: passwordValidation.feedback[0] || "Please use a stronger password",
         variant: "destructive",
       });
       return;
@@ -186,9 +202,32 @@ export function AuthPage() {
                       id="signup-password"
                       type="password"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => handlePasswordChange(e.target.value)}
                       required
+                      className={!passwordValidation.isValid && password ? "border-red-500" : ""}
                     />
+                    {password && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span>Password strength:</span>
+                          <span className={passwordValidation.score < 60 ? 'text-red-600' : passwordValidation.score < 80 ? 'text-yellow-600' : 'text-green-600'}>
+                            {getPasswordStrengthText(passwordValidation.score)}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className={`h-2 rounded-full transition-all ${getPasswordStrengthColor(passwordValidation.score)}`}
+                            style={{ width: `${passwordValidation.score}%` }}
+                          />
+                        </div>
+                        {passwordValidation.feedback.length > 0 && (
+                          <div className="flex items-start gap-1 text-sm text-muted-foreground">
+                            <AlertCircle className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                            <span>{passwordValidation.feedback[0]}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>

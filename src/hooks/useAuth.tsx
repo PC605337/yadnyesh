@@ -19,7 +19,7 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   signOut: () => Promise<void>;
-  switchRole: (newRole: string) => void;
+  switchRole: (newRole: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -28,7 +28,7 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   loading: true,
   signOut: async () => {},
-  switchRole: () => {},
+  switchRole: async () => {},
 });
 
 export const useAuth = () => {
@@ -223,9 +223,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
   }, []);
 
-  const switchRole = (newRole: string) => {
-    if (profile && profile.role !== newRole) {
-      setProfile(prev => prev ? { ...prev, role: newRole } : null);
+  const switchRole = async (newRole: string) => {
+    try {
+      // Call secure role switching function
+      const { data, error } = await supabase.rpc('switch_user_role', {
+        target_role: newRole as any // Cast to satisfy database function type
+      });
+      
+      if (error) throw error;
+      
+      // Update profile only if backend validation succeeds
+      if (profile && profile.role !== newRole) {
+        setProfile(prev => prev ? { ...prev, role: newRole as any } : null);
+      }
+    } catch (error) {
+      console.error('Role switch failed:', error);
+      throw error; // Re-throw so components can handle the error
     }
   };
 

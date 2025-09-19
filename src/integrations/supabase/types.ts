@@ -1474,6 +1474,36 @@ export type Database = {
         }
         Relationships: []
       }
+      security_audit_logs: {
+        Row: {
+          created_at: string | null
+          event_details: Json | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       translations: {
         Row: {
           created_at: string
@@ -1693,6 +1723,10 @@ export type Database = {
       }
       is_admin: {
         Args: { _user_id?: string }
+        Returns: boolean
+      }
+      switch_user_role: {
+        Args: { target_role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
       }
     }

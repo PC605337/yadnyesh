@@ -117,19 +117,24 @@ export const RoleSwitcher = () => {
 
     setSwitching(true);
     
-    // Update role in auth context immediately
-    authSwitchRole(newRole);
-    setCurrentRole(newRole);
-    
-    // Navigate to new role path
-    const rolePath = roleConfig[newRole as keyof typeof roleConfig]?.path;
-    if (rolePath) {
-      navigate(rolePath);
-      toast.success(`Switched to ${roleConfig[newRole as keyof typeof roleConfig].label} role`);
+    try {
+      // Use secure role switching with backend validation
+      await authSwitchRole(newRole);
+      setCurrentRole(newRole);
+      
+      // Navigate to new role path
+      const rolePath = roleConfig[newRole as keyof typeof roleConfig]?.path;
+      if (rolePath) {
+        navigate(rolePath);
+        toast.success(`Switched to ${roleConfig[newRole as keyof typeof roleConfig].label} role`);
+      }
+    } catch (error) {
+      console.error('Role switch failed:', error);
+      toast.error(`Failed to switch role: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setCurrentRole(profile?.role || 'patient'); // Reset to current role
+    } finally {
+      setSwitching(false);
     }
-    
-    // Small delay to allow navigation to complete
-    setTimeout(() => setSwitching(false), 300);
   };
 
   // If user only has one role, don't show switcher
