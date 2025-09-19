@@ -72,6 +72,13 @@ export function ProviderSettings() {
     sunday: { enabled: false, start: '09:00', end: '17:00' }
   });
 
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
+
   useEffect(() => {
     if (user && profile) {
       fetchProviderData();
@@ -163,6 +170,40 @@ export function ProviderSettings() {
 
   const saveAvailability = () => {
     toast.success('Availability schedule saved');
+  };
+
+  const changePassword = async () => {
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast.error('New passwords do not match');
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: passwordForm.newPassword
+      });
+
+      if (error) throw error;
+
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+      
+      toast.success('Password updated successfully');
+    } catch (error: any) {
+      console.error('Error changing password:', error);
+      toast.error(error.message || 'Failed to change password');
+    } finally {
+      setPasswordLoading(false);
+    }
   };
 
   const addSpecialty = (specialty: string) => {
@@ -490,16 +531,54 @@ export function ProviderSettings() {
               <CardTitle>Security Settings</CardTitle>
               <CardDescription>Manage your account security and privacy</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center py-8">
-                <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Security Options</h3>
-                <p className="text-muted-foreground mb-4">
-                  Configure two-factor authentication and password settings
-                </p>
-                <div className="space-y-2">
-                  <Button variant="outline" className="w-full">Change Password</Button>
-                  <Button variant="outline" className="w-full">Enable 2FA</Button>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Lock className="h-5 w-5" />
+                  Change Password
+                </h3>
+                
+                <div className="space-y-4 max-w-md">
+                  <div>
+                    <Label htmlFor="currentPassword">Current Password</Label>
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      value={passwordForm.currentPassword}
+                      onChange={(e) => setPasswordForm({...passwordForm, currentPassword: e.target.value})}
+                      placeholder="Enter current password"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="newPassword">New Password</Label>
+                    <Input
+                      id="newPassword"
+                      type="password"
+                      value={passwordForm.newPassword}
+                      onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
+                      placeholder="Enter new password"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      value={passwordForm.confirmPassword}
+                      onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
+                      placeholder="Confirm new password"
+                    />
+                  </div>
+                  
+                  <Button 
+                    onClick={changePassword} 
+                    disabled={passwordLoading || !passwordForm.newPassword || !passwordForm.confirmPassword}
+                    className="w-full"
+                  >
+                    {passwordLoading ? 'Updating...' : 'Update Password'}
+                  </Button>
                 </div>
               </div>
             </CardContent>
