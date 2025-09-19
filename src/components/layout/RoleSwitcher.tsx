@@ -75,9 +75,10 @@ const roleConfig = {
 };
 
 export const RoleSwitcher = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, switchRole: authSwitchRole } = useAuth();
   const [availableRoles, setAvailableRoles] = useState<UserRole[]>([]);
   const [currentRole, setCurrentRole] = useState(profile?.role || 'patient');
+  const [switching, setSwitching] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -111,15 +112,24 @@ export const RoleSwitcher = () => {
     }
   };
 
-  const switchRole = (newRole: string) => {
-    if (newRole === currentRole) return;
+  const switchRole = async (newRole: string) => {
+    if (newRole === currentRole || switching) return;
 
+    setSwitching(true);
+    
+    // Update role in auth context immediately
+    authSwitchRole(newRole);
     setCurrentRole(newRole);
+    
+    // Navigate to new role path
     const rolePath = roleConfig[newRole as keyof typeof roleConfig]?.path;
     if (rolePath) {
       navigate(rolePath);
       toast.success(`Switched to ${roleConfig[newRole as keyof typeof roleConfig].label} role`);
     }
+    
+    // Small delay to allow navigation to complete
+    setTimeout(() => setSwitching(false), 300);
   };
 
   // If user only has one role, don't show switcher
@@ -140,11 +150,12 @@ export const RoleSwitcher = () => {
       <DropdownMenuTrigger asChild>
         <Button 
           variant="outline" 
+          disabled={switching}
           className="flex items-center gap-2 bg-background/50 backdrop-blur-sm border-border/50"
         >
-          <CurrentIcon className="h-4 w-4" />
+          <CurrentIcon className={cn("h-4 w-4", switching && "animate-spin")} />
           <span className="font-medium">
-            {roleConfig[currentRole as keyof typeof roleConfig]?.label || currentRole}
+            {switching ? "Switching..." : roleConfig[currentRole as keyof typeof roleConfig]?.label || currentRole}
           </span>
           <ChevronDown className="h-3 w-3 opacity-50" />
         </Button>

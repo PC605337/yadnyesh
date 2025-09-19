@@ -19,6 +19,7 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  switchRole: (newRole: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   loading: true,
   signOut: async () => {},
+  switchRole: () => {},
 });
 
 export const useAuth = () => {
@@ -221,6 +223,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
   }, []);
 
+  const switchRole = (newRole: string) => {
+    if (profile && profile.role !== newRole) {
+      setProfile(prev => prev ? { ...prev, role: newRole } : null);
+    }
+  };
+
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
@@ -239,6 +247,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       profile,
       loading,
       signOut,
+      switchRole,
     }}>
       {children}
     </AuthContext.Provider>
