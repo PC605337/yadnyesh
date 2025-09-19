@@ -93,6 +93,13 @@ export function ComprehensivePatientDashboard() {
 
   const quickActions: QuickAction[] = [
     {
+      icon: Shield,
+      label: "Complete Health Setup",
+      action: () => window.location.href = '/onboarding',
+      color: "bg-gradient-to-r from-primary to-secondary text-white hover:from-primary/90 hover:to-secondary/90",
+      urgent: true
+    },
+    {
       icon: Video,
       label: "Book Video Consultation",
       action: () => window.location.href = '/patient/consultation',

@@ -20,11 +20,13 @@ import { ConsentManager } from "@/components/compliance/ConsentManager";
 import HelpSupport from "@/components/support/HelpSupport";
 import { PredictiveAnalytics } from "@/components/analytics/PredictiveAnalytics";
 import { AdvancedSecurity } from "@/components/security/AdvancedSecurity";
+import { InsuranceOnboarding } from "@/components/patient/InsuranceOnboarding";
 
 const PatientApp = () => {
   return (
     <HealthcareLayout>
       <Routes>
+        <Route path="onboarding" element={<InsuranceOnboarding />} />
         <Route index element={<ComprehensivePatientDashboard />} />
         <Route path="consultation" element={<VideoConsultation />} />
         <Route path="appointments" element={<AppointmentManagement />} />

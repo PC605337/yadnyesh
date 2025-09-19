@@ -17,6 +17,7 @@ import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import { AccessibilityProvider } from "./components/accessibility/AccessibilityProvider";
 import { Loader2 } from "lucide-react";
+import { InsuranceOnboarding } from "./components/patient/InsuranceOnboarding";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const AppRoutes = () => {
     return (
       <Routes>
         <Route path="/auth" element={<Auth />} />
+        <Route path="/onboarding" element={<InsuranceOnboarding />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/" element={<Navigate to="/auth" replace />} />
@@ -143,6 +145,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <PrescriptionManagement />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/onboarding" 
+        element={
+          <ProtectedRoute>
+            <InsuranceOnboarding />
           </ProtectedRoute>
         } 
       />
