@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DemoDataPopulator } from "./DemoDataPopulator";
+import { SecurityMonitor } from "@/components/security/SecurityMonitor";
 import { 
   Users, 
   Building2, 
@@ -301,9 +302,15 @@ export function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Security Monitor */}
+        <SecurityMonitor userRole="admin" />
+        
         {/* Demo Data Populator */}
         <DemoDataPopulator />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* System Metrics */}
         <Card>
@@ -340,6 +347,28 @@ export function AdminDashboard() {
                 <Badge variant="outline" className="bg-green-100 text-green-800">
                   Secure
                 </Badge>
+              </div>
+              
+              <div className="pt-2 border-t">
+                <p className="text-xs text-muted-foreground mb-2">Security Implementation Status:</p>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span className="text-xs">RLS Policies Active</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span className="text-xs">Audit Logging Enabled</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span className="text-xs">Rate Limiting Active</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-3 w-3 text-yellow-600" />
+                    <span className="text-xs">Password Protection Pending</span>
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>

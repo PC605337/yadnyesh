@@ -59,6 +59,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         
         setSession(session);
         setUser(session?.user ?? null);
+
+        // Log authentication events for security monitoring
+        if (event === 'SIGNED_IN' && session?.user) {
+          // Defer Supabase calls to avoid potential deadlock
+          setTimeout(async () => {
+            try {
+              await supabase.rpc('log_auth_attempt', {
+                attempt_type: 'sign_in',
+                success: true,
+                user_email: session.user.email,
+                additional_details: { event, timestamp: new Date().toISOString() }
+              });
+            } catch (error) {
+              console.error('Security logging failed:', error);
+            }
+          }, 0);
+        } else if (event === 'SIGNED_OUT') {
+          setTimeout(async () => {
+            try {
+              await supabase.rpc('log_auth_attempt', {
+                attempt_type: 'sign_out', 
+                success: true,
+                additional_details: { event, timestamp: new Date().toISOString() }
+              });
+            } catch (error) {
+              console.error('Security logging failed:', error);
+            }
+          }, 0);
+        }
         
         if (session?.user) {
           // Fetch user profile with better error handling
@@ -230,11 +259,44 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         target_role: newRole as any // Cast to satisfy database function type
       });
       
-      if (error) throw error;
+      if (error) {
+        // Log failed role switch attempt
+        setTimeout(async () => {
+          try {
+            await supabase.rpc('log_security_event', {
+              event_type: 'role_switch_failure',
+              event_details: { 
+                attempted_role: newRole,
+                error_message: error.message,
+                timestamp: new Date().toISOString()
+              }
+            });
+          } catch (logError) {
+            console.error('Security logging failed:', logError);
+          }
+        }, 0);
+        throw error;
+      }
       
       // Update profile only if backend validation succeeds
       if (profile && profile.role !== newRole) {
         setProfile(prev => prev ? { ...prev, role: newRole as any } : null);
+        
+        // Log successful role switch
+        setTimeout(async () => {
+          try {
+            await supabase.rpc('log_security_event', {
+              event_type: 'role_switch_success',
+              event_details: { 
+                new_role: newRole,
+                previous_role: profile.role,
+                timestamp: new Date().toISOString()
+              }
+            });
+          } catch (logError) {
+            console.error('Security logging failed:', logError);
+          }
+        }, 0);
       }
     } catch (error) {
       console.error('Role switch failed:', error);
@@ -244,12 +306,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     try {
+      // Log sign out attempt
+      setTimeout(async () => {
+        try {
+          await supabase.rpc('log_auth_attempt', {
+            attempt_type: 'sign_out',
+            success: true,
+            additional_details: { timestamp: new Date().toISOString() }
+          });
+        } catch (logError) {
+          console.error('Security logging failed:', logError);
+        }
+      }, 0);
+
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
       setProfile(null);
     } catch (error) {
       console.error('Sign out error:', error);
+      
+      // Log failed sign out
+      setTimeout(async () => {
+        try {
+          await supabase.rpc('log_auth_attempt', {
+            attempt_type: 'sign_out',
+            success: false,
+            additional_details: { 
+              error_message: error instanceof Error ? error.message : 'Unknown error',
+              timestamp: new Date().toISOString()
+            }
+          });
+        } catch (logError) {
+          console.error('Security logging failed:', logError);
+        }
+      }, 0);
     }
   };
 
