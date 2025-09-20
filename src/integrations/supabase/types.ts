@@ -1706,6 +1706,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          max_attempts?: number
+          operation_type: string
+          time_window?: unknown
+        }
+        Returns: boolean
+      }
       current_user_is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -1724,6 +1732,10 @@ export type Database = {
       is_admin: {
         Args: { _user_id?: string }
         Returns: boolean
+      }
+      log_security_event: {
+        Args: { event_details?: Json; event_type: string }
+        Returns: undefined
       }
       switch_user_role: {
         Args: { target_role: Database["public"]["Enums"]["app_role"] }
