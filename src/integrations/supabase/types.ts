@@ -1733,12 +1733,25 @@ export type Database = {
         Args: { _user_id?: string }
         Returns: boolean
       }
+      log_auth_attempt: {
+        Args: {
+          additional_details?: Json
+          attempt_type: string
+          success: boolean
+          user_email?: string
+        }
+        Returns: undefined
+      }
       log_security_event: {
         Args: { event_details?: Json; event_type: string }
         Returns: undefined
       }
       switch_user_role: {
         Args: { target_role: Database["public"]["Enums"]["app_role"] }
+        Returns: boolean
+      }
+      validate_sensitive_operation: {
+        Args: { operation_type: string; required_role?: string }
         Returns: boolean
       }
     }
