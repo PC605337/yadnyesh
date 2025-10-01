@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { UserCheck, Stethoscope, Building2, Shield } from "lucide-react";
+import { UserCheck, Stethoscope, Building2, Shield, Heart } from "lucide-react";
 
 interface Role {
   id: string;
@@ -20,6 +20,14 @@ const roles: Role[] = [
     description: "Access healthcare services, book consultations, manage prescriptions",
     icon: UserCheck,
     features: ["Book consultations", "Manage health records", "Insurance claims", "Medicine delivery"],
+  },
+  {
+    id: "children",
+    title: "Children (TBI Recovery)",
+    description: "Child-friendly platform for traumatic brain injury recovery and support",
+    icon: Heart,
+    features: ["Fun symptom tracking", "Brain games & exercises", "Family hub", "School support"],
+    badge: "New!"
   },
   {
     id: "provider",

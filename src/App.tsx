@@ -10,6 +10,7 @@ import PatientApp from "./pages/PatientApp";
 import ProviderApp from "./pages/ProviderApp";
 import CorporateApp from "./pages/CorporateApp";
 import AdminApp from "./pages/AdminApp";
+import ChildrenApp from "./pages/ChildrenApp";
 import ConsultationBooking from "./pages/ConsultationBooking";
 import PrescriptionManagement from "./pages/PrescriptionManagement";
 import NotFound from "./pages/NotFound";
@@ -106,6 +107,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={["patient"]}>
             <PatientApp />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/children/*" 
+        element={
+          <ProtectedRoute allowedRoles={["children"]}>
+            <ChildrenApp />
           </ProtectedRoute>
         } 
       />

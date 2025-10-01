@@ -119,6 +119,87 @@ export type Database = {
         }
         Relationships: []
       }
+      caregiver_notes: {
+        Row: {
+          caregiver_id: string
+          child_id: string
+          content: string
+          created_at: string | null
+          id: string
+          is_shared_with_school: boolean | null
+          note_type: string | null
+          reminder_date: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          caregiver_id: string
+          child_id: string
+          content: string
+          created_at?: string | null
+          id?: string
+          is_shared_with_school?: boolean | null
+          note_type?: string | null
+          reminder_date?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          caregiver_id?: string
+          child_id?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_shared_with_school?: boolean | null
+          note_type?: string | null
+          reminder_date?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      children_profiles: {
+        Row: {
+          accessibility_settings: Json | null
+          age: number | null
+          avatar_character: string | null
+          created_at: string | null
+          grade_level: string | null
+          id: string
+          injury_date: string | null
+          injury_type: string | null
+          parent_id: string | null
+          school_name: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          accessibility_settings?: Json | null
+          age?: number | null
+          avatar_character?: string | null
+          created_at?: string | null
+          grade_level?: string | null
+          id?: string
+          injury_date?: string | null
+          injury_type?: string | null
+          parent_id?: string | null
+          school_name?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          accessibility_settings?: Json | null
+          age?: number | null
+          avatar_character?: string | null
+          created_at?: string | null
+          grade_level?: string | null
+          id?: string
+          injury_date?: string | null
+          injury_type?: string | null
+          parent_id?: string | null
+          school_name?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       community_forums: {
         Row: {
           category: string | null
@@ -1474,6 +1555,78 @@ export type Database = {
         }
         Relationships: []
       }
+      rehabilitation_activities: {
+        Row: {
+          activity_name: string
+          activity_type: string
+          badges_earned: Json | null
+          child_id: string
+          completed_at: string | null
+          created_at: string | null
+          duration_minutes: number | null
+          id: string
+          score: number | null
+        }
+        Insert: {
+          activity_name: string
+          activity_type: string
+          badges_earned?: Json | null
+          child_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          score?: number | null
+        }
+        Update: {
+          activity_name?: string
+          activity_type?: string
+          badges_earned?: Json | null
+          child_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          score?: number | null
+        }
+        Relationships: []
+      }
+      school_accommodations: {
+        Row: {
+          accommodation_type: string
+          approved_by_school: boolean | null
+          child_id: string
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean | null
+          start_date: string | null
+        }
+        Insert: {
+          accommodation_type: string
+          approved_by_school?: boolean | null
+          child_id: string
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          start_date?: string | null
+        }
+        Update: {
+          accommodation_type?: string
+          approved_by_school?: boolean | null
+          child_id?: string
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          start_date?: string | null
+        }
+        Relationships: []
+      }
       security_audit_logs: {
         Row: {
           created_at: string | null
@@ -1501,6 +1654,45 @@ export type Database = {
           ip_address?: string | null
           user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      symptom_logs: {
+        Row: {
+          child_id: string
+          created_at: string | null
+          dizziness_level: number | null
+          headache_level: number | null
+          id: string
+          log_date: string
+          memory_issues: boolean | null
+          mood_rating: number | null
+          notes: string | null
+          stickers_earned: Json | null
+        }
+        Insert: {
+          child_id: string
+          created_at?: string | null
+          dizziness_level?: number | null
+          headache_level?: number | null
+          id?: string
+          log_date?: string
+          memory_issues?: boolean | null
+          mood_rating?: number | null
+          notes?: string | null
+          stickers_earned?: Json | null
+        }
+        Update: {
+          child_id?: string
+          created_at?: string | null
+          dizziness_level?: number | null
+          headache_level?: number | null
+          id?: string
+          log_date?: string
+          memory_issues?: boolean | null
+          mood_rating?: number | null
+          notes?: string | null
+          stickers_earned?: Json | null
         }
         Relationships: []
       }
@@ -1756,7 +1948,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "patient" | "provider" | "corporate" | "admin"
+      app_role: "patient" | "provider" | "corporate" | "admin" | "children"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1884,7 +2076,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["patient", "provider", "corporate", "admin"],
+      app_role: ["patient", "provider", "corporate", "admin", "children"],
     },
   },
 } as const

@@ -57,8 +57,15 @@ const roleConfig = {
     color: "bg-green-500 text-green-50",
     description: "Patient healthcare services"
   },
+  children: {
+    label: "Children",
+    icon: Heart,
+    path: "/children",
+    color: "bg-pink-500 text-pink-50",
+    description: "Child-friendly TBI recovery support"
+  },
   // Future roles can be added here
-  insurance: { 
+  insurance: {
     label: "Insurance", 
     icon: CreditCard, 
     path: "/insurance",
