@@ -21,112 +21,204 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+    <div className="min-h-screen bg-gradient-background relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-healing-green/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center max-w-4xl mx-auto">
-          <div className="flex justify-center mb-6">
-            <div className="bg-primary/10 p-4 rounded-full">
-              <Heart className="h-12 w-12 text-primary" />
+      <div className="container mx-auto px-4 py-20 relative z-10">
+        <div className="text-center max-w-5xl mx-auto">
+          <div className="flex justify-center mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-primary rounded-full blur-xl opacity-50 animate-pulse"></div>
+              <div className="relative bg-gradient-primary p-6 rounded-3xl shadow-glow">
+                <Heart className="h-16 w-16 text-white" />
+              </div>
             </div>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Healthcare Platform
+          
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+            <span className="gradient-text">Healthcare Platform</span>
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Comprehensive healthcare management for patients, providers, and healthcare organizations. 
-            Experience the future of medical care with AI-powered insights and seamless connectivity.
+          
+          <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+            Experience the future of medical care with AI-powered insights, seamless connectivity, 
+            and comprehensive healthcare management designed for the modern world.
           </p>
-          <Button 
-            onClick={handleGetStarted}
-            size="lg" 
-            className="text-lg px-8 py-6 group"
-          >
-            Get Started Today
-            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+            <Button 
+              onClick={handleGetStarted}
+              variant="medical"
+              size="hero" 
+              className="group shadow-glow"
+            >
+              Get Started Today
+              <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
+            </Button>
+            <Button 
+              variant="glass"
+              size="hero"
+              className="group"
+            >
+              Watch Demo
+              <Shield className="ml-2 h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
+            </Button>
+          </div>
+
+          {/* Trust indicators */}
+          <div className="mt-16 flex flex-wrap justify-center gap-8 text-sm text-muted-foreground animate-in fade-in duration-700 delay-500">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+              <span>HIPAA Compliant</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+              <span>SOC 2 Certified</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+              <span>24/7 Support</span>
+            </div>
+          </div>
         </div>
 
         {/* Features Grid */}
-        <div className="mt-20 grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="mt-32 grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <Card className="text-center group hover-lift border-0 hover:border-gradient animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
             <CardHeader>
-              <div className="mx-auto bg-blue-100 dark:bg-blue-900/20 p-3 rounded-full w-fit mb-4">
-                <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              <div className="mx-auto relative mb-6">
+                <div className="absolute inset-0 bg-gradient-primary rounded-2xl blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                <div className="relative bg-primary-light p-5 rounded-2xl w-fit mx-auto shadow-md group-hover:shadow-xl transition-all duration-300">
+                  <Users className="h-10 w-10 text-primary" />
+                </div>
               </div>
-              <CardTitle>For Patients</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-2xl mb-3">For Patients</CardTitle>
+              <CardDescription className="text-base">
                 Comprehensive health management, telemedicine consultations, and AI-powered health insights
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li>• Digital health records</li>
-                <li>• Video consultations</li>
-                <li>• AI health assistant</li>
-                <li>• Prescription management</li>
+              <ul className="text-left text-muted-foreground space-y-3">
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                  <span>Digital health records</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                  <span>Video consultations</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                  <span>AI health assistant</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                  <span>Prescription management</span>
+                </li>
               </ul>
             </CardContent>
           </Card>
 
-          <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="text-center group hover-lift border-0 hover:border-gradient animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
             <CardHeader>
-              <div className="mx-auto bg-green-100 dark:bg-green-900/20 p-3 rounded-full w-fit mb-4">
-                <Stethoscope className="h-8 w-8 text-green-600 dark:text-green-400" />
+              <div className="mx-auto relative mb-6">
+                <div className="absolute inset-0 bg-gradient-healing rounded-2xl blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                <div className="relative bg-success-light p-5 rounded-2xl w-fit mx-auto shadow-md group-hover:shadow-xl transition-all duration-300">
+                  <Stethoscope className="h-10 w-10 text-success" />
+                </div>
               </div>
-              <CardTitle>For Providers</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-2xl mb-3">For Providers</CardTitle>
+              <CardDescription className="text-base">
                 Advanced practice management, patient engagement tools, and clinical decision support
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li>• Patient management</li>
-                <li>• Appointment scheduling</li>
-                <li>• Clinical workflows</li>
-                <li>• Revenue tracking</li>
+              <ul className="text-left text-muted-foreground space-y-3">
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-success rounded-full"></div>
+                  <span>Patient management</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-success rounded-full"></div>
+                  <span>Appointment scheduling</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-success rounded-full"></div>
+                  <span>Clinical workflows</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-success rounded-full"></div>
+                  <span>Revenue tracking</span>
+                </li>
               </ul>
             </CardContent>
           </Card>
 
-          <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
+          <Card className="text-center group hover-lift border-0 hover:border-gradient animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
             <CardHeader>
-              <div className="mx-auto bg-purple-100 dark:bg-purple-900/20 p-3 rounded-full w-fit mb-4">
-                <Shield className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+              <div className="mx-auto relative mb-6">
+                <div className="absolute inset-0 bg-gradient-trust rounded-2xl blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                <div className="relative bg-accent-light p-5 rounded-2xl w-fit mx-auto shadow-md group-hover:shadow-xl transition-all duration-300">
+                  <Shield className="h-10 w-10 text-accent" />
+                </div>
               </div>
-              <CardTitle>For Organizations</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-2xl mb-3">For Organizations</CardTitle>
+              <CardDescription className="text-base">
                 Enterprise healthcare solutions with analytics, compliance, and integration capabilities
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li>• Admin dashboards</li>
-                <li>• Compliance management</li>
-                <li>• Analytics & reporting</li>
-                <li>• Integration APIs</li>
+              <ul className="text-left text-muted-foreground space-y-3">
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full"></div>
+                  <span>Admin dashboards</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full"></div>
+                  <span>Compliance management</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full"></div>
+                  <span>Analytics & reporting</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full"></div>
+                  <span>Integration APIs</span>
+                </li>
               </ul>
             </CardContent>
           </Card>
         </div>
 
         {/* Call to Action */}
-        <div className="mt-20 text-center">
-          <Card className="max-w-2xl mx-auto bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
-            <CardHeader>
-              <CardTitle className="text-2xl">Ready to Transform Healthcare?</CardTitle>
-              <CardDescription className="text-lg">
-                Join thousands of healthcare professionals and patients already using our platform
+        <div className="mt-32 text-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400">
+          <Card className="max-w-3xl mx-auto glass-card border-2 border-primary/20 hover:border-primary/40 transition-all duration-500 shadow-2xl hover:shadow-glow">
+            <CardHeader className="space-y-4 pb-8">
+              <CardTitle className="text-3xl md:text-4xl font-bold">
+                Ready to Transform Healthcare?
+              </CardTitle>
+              <CardDescription className="text-lg md:text-xl">
+                Join thousands of healthcare professionals and patients already using our platform to revolutionize medical care
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pb-8">
               <Button 
                 onClick={handleGetStarted}
-                size="lg"
-                className="text-lg px-8 py-6"
+                variant="medical"
+                size="hero"
+                className="shadow-glow"
               >
                 Start Your Journey
+                <ArrowRight className="ml-2 h-6 w-6" />
               </Button>
+              <p className="text-sm text-muted-foreground mt-6">
+                No credit card required • Free 30-day trial • Cancel anytime
+              </p>
             </CardContent>
           </Card>
         </div>

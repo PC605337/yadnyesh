@@ -5,22 +5,23 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        // Healthcare-specific variants
-        medical: "bg-gradient-primary text-primary-foreground hover:shadow-medical transition-all duration-200",
-        healing: "bg-healing-green text-white hover:bg-healing-green/90 shadow-md hover:shadow-lg transition-all duration-200",
-        emergency: "bg-emergency-red text-white hover:bg-emergency-red/90 shadow-md animate-pulse hover:animate-none",
-        trust: "bg-trust-purple text-white hover:bg-trust-purple/90 shadow-md",
-        consultation: "bg-gradient-primary text-primary-foreground border-2 border-primary-glow/30 hover:border-primary-glow/50 shadow-glow hover:shadow-medical transition-all duration-300",
+        default: "bg-gradient-primary text-primary-foreground shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]",
+        destructive: "bg-destructive text-destructive-foreground shadow-md hover:shadow-lg hover:bg-destructive/90",
+        outline: "border-2 border-border bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent shadow-sm hover:shadow-md",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm hover:shadow-md",
+        ghost: "hover:bg-accent/10 hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline hover:text-primary-glow",
+        // Premium healthcare variants
+        medical: "bg-gradient-primary text-primary-foreground shadow-medical hover:shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all duration-300",
+        healing: "bg-gradient-healing text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]",
+        emergency: "bg-emergency-red text-white shadow-lg hover:shadow-xl hover:bg-emergency-red/90 animate-pulse hover:animate-none",
+        trust: "bg-gradient-trust text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]",
+        consultation: "bg-gradient-primary text-primary-foreground border-2 border-primary-glow/30 hover:border-primary-glow/60 shadow-glow hover:shadow-medical hover:scale-[1.02] active:scale-[0.98] transition-all duration-300",
+        glass: "glass-card text-foreground shadow-lg hover:shadow-xl backdrop-blur-lg hover:scale-[1.02]",
       },
       size: {
         default: "h-10 px-4 py-2",

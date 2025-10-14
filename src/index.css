@@ -8,58 +8,92 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 215 25% 27%;
+    /* Base colors with enhanced depth */
+    --background: 220 20% 99%;
+    --foreground: 220 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 220 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 210 79% 46%;
+    /* Modern primary palette - Deep medical blue with vibrancy */
+    --primary: 214 88% 52%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 210 79% 60%;
+    --primary-glow: 214 88% 65%;
+    --primary-deep: 214 92% 42%;
+    --primary-light: 214 85% 90%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 25% 27%;
+    /* Sophisticated secondary */
+    --secondary: 220 18% 94%;
+    --secondary-foreground: 220 15% 25%;
 
-    --muted: 210 40% 94%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Enhanced muted tones */
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 12% 52%;
 
-    --accent: 142 69% 58%;
+    /* Vibrant accent - Teal for energy */
+    --accent: 178 78% 48%;
     --accent-foreground: 0 0% 100%;
+    --accent-light: 178 78% 92%;
 
-    --success: 142 69% 58%;
+    /* Success - Healing green */
+    --success: 148 68% 52%;
     --success-foreground: 0 0% 100%;
+    --success-light: 148 68% 92%;
 
-    --warning: 48 96% 53%;
-    --warning-foreground: 215 25% 27%;
+    /* Warning - Amber */
+    --warning: 38 92% 58%;
+    --warning-foreground: 220 15% 15%;
+    --warning-light: 38 92% 92%;
 
-    --destructive: 0 84.2% 60.2%;
+    /* Destructive - Modern red */
+    --destructive: 358 75% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 0 0% 100%;
-    --ring: 210 79% 46%;
+    /* Borders & inputs */
+    --border: 220 15% 88%;
+    --input: 220 15% 96%;
+    --ring: 214 88% 52%;
 
     /* Healthcare specific colors */
-    --medical-blue: 210 79% 46%;
-    --medical-blue-light: 210 40% 96%;
-    --healing-green: 142 69% 58%;
-    --trust-purple: 249 69% 65%;
-    --emergency-red: 0 84% 60%;
+    --medical-blue: 214 88% 52%;
+    --medical-blue-light: 214 85% 90%;
+    --healing-green: 148 68% 52%;
+    --trust-purple: 262 72% 62%;
+    --emergency-red: 358 75% 58%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(210 79% 46%) 0%, hsl(210 79% 60%) 100%);
-    --gradient-healing: linear-gradient(135deg, hsl(142 69% 58%) 0%, hsl(142 69% 70%) 100%);
-    --gradient-background: linear-gradient(180deg, hsl(210 40% 98%) 0%, hsl(210 30% 95%) 100%);
+    /* Premium gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(214 92% 42%) 0%, hsl(214 88% 52%) 50%, hsl(214 88% 65%) 100%);
+    --gradient-healing: linear-gradient(135deg, hsl(148 68% 52%) 0%, hsl(168 72% 58%) 100%);
+    --gradient-trust: linear-gradient(135deg, hsl(262 72% 62%) 0%, hsl(242 68% 68%) 100%);
+    --gradient-background: linear-gradient(180deg, hsl(220 20% 99%) 0%, hsl(220 18% 97%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(220 20% 99%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsla(0 0% 100% / 0.9) 0%, hsla(220 20% 99% / 0.8) 100%);
 
-    /* Animations */
+    /* Advanced shadows with depth */
+    --shadow-sm: 0 1px 2px 0 hsl(220 15% 15% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 15% 15% / 0.08), 0 2px 4px -2px hsl(220 15% 15% / 0.04);
+    --shadow-lg: 0 10px 15px -3px hsl(220 15% 15% / 0.1), 0 4px 6px -4px hsl(220 15% 15% / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(220 15% 15% / 0.1), 0 8px 10px -6px hsl(220 15% 15% / 0.05);
+    --shadow-2xl: 0 25px 50px -12px hsl(220 15% 15% / 0.15);
+    --shadow-medical: 0 12px 30px -8px hsl(214 88% 52% / 0.25), 0 4px 12px -4px hsl(214 88% 52% / 0.15);
+    --shadow-glow: 0 0 24px hsl(214 88% 65% / 0.35), 0 0 12px hsl(214 88% 52% / 0.2);
+    --shadow-card: 0 8px 24px -4px hsl(220 15% 15% / 0.08), 0 2px 8px -2px hsl(220 15% 15% / 0.04);
+    --shadow-inner: inset 0 2px 4px 0 hsl(220 15% 15% / 0.05);
+
+    /* Premium animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-elegant: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 
-    --radius: 0.5rem;
+    /* Modern border radius */
+    --radius: 0.75rem;
+    --radius-sm: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -79,33 +113,80 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode with rich depth */
+    --background: 220 28% 6%;
+    --foreground: 220 15% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 25% 8%;
+    --card-foreground: 220 15% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 25% 8%;
+    --popover-foreground: 220 15% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Dark mode primary - Brighter for contrast */
+    --primary: 214 88% 58%;
+    --primary-foreground: 220 28% 6%;
+    --primary-glow: 214 88% 72%;
+    --primary-deep: 214 92% 48%;
+    --primary-light: 214 85% 22%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Dark secondary */
+    --secondary: 220 20% 14%;
+    --secondary-foreground: 220 15% 90%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Dark muted */
+    --muted: 220 20% 12%;
+    --muted-foreground: 220 12% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Dark accent */
+    --accent: 178 78% 55%;
+    --accent-foreground: 220 28% 6%;
+    --accent-light: 178 78% 18%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Dark success */
+    --success: 148 68% 58%;
+    --success-foreground: 220 28% 6%;
+    --success-light: 148 68% 18%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Dark warning */
+    --warning: 38 92% 65%;
+    --warning-foreground: 220 28% 6%;
+    --warning-light: 38 92% 18%;
+
+    /* Dark destructive */
+    --destructive: 358 75% 65%;
+    --destructive-foreground: 220 28% 6%;
+
+    /* Dark borders */
+    --border: 220 20% 18%;
+    --input: 220 20% 12%;
+    --ring: 214 88% 58%;
+
+    /* Dark healthcare colors */
+    --medical-blue: 214 88% 58%;
+    --medical-blue-light: 214 85% 22%;
+    --healing-green: 148 68% 58%;
+    --trust-purple: 262 72% 68%;
+    --emergency-red: 358 75% 65%;
+
+    /* Dark mode gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(214 92% 48%) 0%, hsl(214 88% 58%) 50%, hsl(214 88% 72%) 100%);
+    --gradient-healing: linear-gradient(135deg, hsl(148 68% 58%) 0%, hsl(168 72% 65%) 100%);
+    --gradient-trust: linear-gradient(135deg, hsl(262 72% 68%) 0%, hsl(242 68% 75%) 100%);
+    --gradient-background: linear-gradient(180deg, hsl(220 28% 6%) 0%, hsl(220 25% 8%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(220 25% 8%) 0%, hsl(220 28% 10%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsla(220 25% 8% / 0.9) 0%, hsla(220 28% 10% / 0.8) 100%);
+
+    /* Dark mode shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.15);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.2), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.25), 0 4px 6px -4px hsl(0 0% 0% / 0.15);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.3), 0 8px 10px -6px hsl(0 0% 0% / 0.2);
+    --shadow-2xl: 0 25px 50px -12px hsl(0 0% 0% / 0.4);
+    --shadow-medical: 0 12px 30px -8px hsl(214 88% 58% / 0.35), 0 4px 12px -4px hsl(214 88% 58% / 0.25);
+    --shadow-glow: 0 0 24px hsl(214 88% 72% / 0.45), 0 0 12px hsl(214 88% 58% / 0.3);
+    --shadow-card: 0 8px 24px -4px hsl(0 0% 0% / 0.25), 0 2px 8px -2px hsl(0 0% 0% / 0.15);
+    --shadow-inner: inset 0 2px 4px 0 hsl(0 0% 0% / 0.15);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -179,6 +260,76 @@ html {
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced selection */
+  ::selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--primary-deep));
+  }
+}
+
+/* Glass morphism utility */
+@layer utilities {
+  .glass {
+    background: var(--gradient-glass);
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .glass-card {
+    background: hsla(0 0% 100% / 0.7);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.3);
+  }
+
+  .dark .glass-card {
+    background: hsla(220 25% 8% / 0.7);
+  }
+
+  /* Premium shadows */
+  .shadow-premium {
+    box-shadow: var(--shadow-xl);
+  }
+
+  .shadow-float {
+    box-shadow: 0 8px 30px -6px hsl(220 15% 15% / 0.12);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .shadow-float:hover {
+    box-shadow: 0 16px 40px -8px hsl(220 15% 15% / 0.18);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Smooth hover lift */
+  .hover-lift {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Premium border */
+  .border-gradient {
+    border: 2px solid transparent;
+    background-image: linear-gradient(hsl(var(--card)), hsl(var(--card))), var(--gradient-primary);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
   }
 }

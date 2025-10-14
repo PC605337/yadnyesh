@@ -82,18 +82,35 @@ export default {
       },
       backgroundImage: {
         "gradient-primary": "var(--gradient-primary)",
-        "gradient-healing": "var(--gradient-healing)", 
+        "gradient-healing": "var(--gradient-healing)",
+        "gradient-trust": "var(--gradient-trust)",
         "gradient-background": "var(--gradient-background)",
+        "gradient-card": "var(--gradient-card)",
+        "gradient-glass": "var(--gradient-glass)",
       },
       boxShadow: {
+        "sm": "var(--shadow-sm)",
+        "md": "var(--shadow-md)",
+        "lg": "var(--shadow-lg)",
+        "xl": "var(--shadow-xl)",
+        "2xl": "var(--shadow-2xl)",
         "medical": "var(--shadow-medical)",
         "glow": "var(--shadow-glow)",
         "card": "var(--shadow-card)",
+        "inner": "var(--shadow-inner)",
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "var(--radius-sm)",
+        sm: "calc(var(--radius-sm) - 2px)",
+        xl: "var(--radius-lg)",
+        "2xl": "var(--radius-xl)",
+      },
+      transitionTimingFunction: {
+        "smooth": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+        "spring": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        "elegant": "cubic-bezier(0.23, 1, 0.32, 1)",
       },
       keyframes: {
         "accordion-down": {
