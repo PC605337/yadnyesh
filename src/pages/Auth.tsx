@@ -10,6 +10,7 @@ import { Loader2, Mail, Lock, User, Phone, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { loginSchema, signupSchema } from '@/utils/validationSchemas';
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -43,10 +44,23 @@ export default function Auth() {
     setIsLoading(true);
     setError('');
 
+    // Validate input
+    const validation = loginSchema.safeParse({
+      email: loginEmail,
+      password: loginPassword
+    });
+
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      setError(firstError.message);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email: loginEmail,
-        password: loginPassword,
+        email: validation.data.email,
+        password: validation.data.password,
       });
 
       if (error) {
@@ -73,14 +87,20 @@ export default function Auth() {
     setIsLoading(true);
     setError('');
 
-    if (signupPassword !== confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
-      return;
-    }
+    // Validate input
+    const validation = signupSchema.safeParse({
+      email: signupEmail,
+      password: signupPassword,
+      confirmPassword: confirmPassword,
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      role: role
+    });
 
-    if (signupPassword.length < 6) {
-      setError('Password must be at least 6 characters long');
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      setError(firstError.message);
       setIsLoading(false);
       return;
     }
@@ -89,15 +109,15 @@ export default function Auth() {
       const redirectUrl = `${window.location.origin}/`;
       
       const { error } = await supabase.auth.signUp({
-        email: signupEmail,
-        password: signupPassword,
+        email: validation.data.email,
+        password: validation.data.password,
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            first_name: firstName,
-            last_name: lastName,
-            phone: phone,
-            role: role,
+            first_name: validation.data.firstName,
+            last_name: validation.data.lastName,
+            phone: validation.data.phone,
+            role: validation.data.role,
           }
         }
       });

@@ -28,6 +28,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { healthRecordSchema } from "@/utils/validationSchemas";
 
 interface HealthRecord {
   id: string;
@@ -125,10 +126,30 @@ export function HealthRecordsManager() {
 
   const addRecord = async () => {
     try {
+      // Validate input
+      const validation = healthRecordSchema.safeParse({
+        type: newRecord.type,
+        title: newRecord.title.trim(),
+        recorded_date: newRecord.recorded_date,
+        data: newRecord.data
+      });
+
+      if (!validation.success) {
+        const firstError = validation.error.errors[0];
+        toast.error(firstError.message);
+        return;
+      }
+
       let fileUrl = newRecord.file_url;
       
       // Handle file upload if present
       if (uploadFile) {
+        // Validate file size (max 10MB)
+        if (uploadFile.size > 10 * 1024 * 1024) {
+          toast.error('File size must be less than 10MB');
+          return;
+        }
+
         const fileExt = uploadFile.name.split('.').pop();
         const fileName = `${user?.id}/${Date.now()}.${fileExt}`;
         
@@ -148,10 +169,12 @@ export function HealthRecordsManager() {
       const { error } = await supabase
         .from('health_records')
         .insert({
-          ...newRecord,
+          type: validation.data.type,
+          title: validation.data.title,
+          recorded_date: validation.data.recorded_date,
+          data: validation.data.data,
           patient_id: user?.id,
-          file_url: fileUrl,
-          data: newRecord.data || {}
+          file_url: fileUrl
         });
 
       if (error) throw error;

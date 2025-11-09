@@ -26,6 +26,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { appointmentBookingSchema } from "@/utils/validationSchemas";
 
 interface Appointment {
   id: string;
@@ -132,10 +133,29 @@ export function AppointmentManagement() {
 
   const bookAppointment = async () => {
     try {
+      // Validate input
+      const validation = appointmentBookingSchema.safeParse({
+        provider_id: newAppointment.provider_id,
+        appointment_date: newAppointment.appointment_date,
+        type: newAppointment.type,
+        reason: newAppointment.reason.trim(),
+        duration_minutes: newAppointment.duration_minutes
+      });
+
+      if (!validation.success) {
+        const firstError = validation.error.errors[0];
+        toast.error(firstError.message);
+        return;
+      }
+
       const { error } = await supabase
         .from('appointments')
         .insert({
-          ...newAppointment,
+          provider_id: validation.data.provider_id,
+          appointment_date: validation.data.appointment_date,
+          type: validation.data.type,
+          reason: validation.data.reason,
+          duration_minutes: validation.data.duration_minutes,
           patient_id: user?.id,
           status: 'scheduled'
         });

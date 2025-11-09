@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Smile, Meh, Frown, Heart, Brain, AlertCircle } from "lucide-react";
+import { symptomLogSchema } from "@/utils/validationSchemas";
 
 export default function SymptomTracker() {
   const { user } = useAuth();
@@ -49,6 +50,22 @@ export default function SymptomTracker() {
   const saveLog = async () => {
     setLoading(true);
     try {
+      // Validate input
+      const validation = symptomLogSchema.safeParse({
+        headache_level: headache,
+        dizziness_level: dizziness,
+        mood_rating: mood,
+        memory_issues: memoryIssues,
+        notes: notes.trim()
+      });
+
+      if (!validation.success) {
+        const firstError = validation.error.errors[0];
+        toast.error(firstError.message);
+        setLoading(false);
+        return;
+      }
+
       const today = new Date().toISOString().split('T')[0];
       
       // Award stickers based on completion
@@ -63,11 +80,11 @@ export default function SymptomTracker() {
         .upsert({
           child_id: user?.id,
           log_date: today,
-          headache_level: headache,
-          dizziness_level: dizziness,
-          memory_issues: memoryIssues,
-          mood_rating: mood,
-          notes: notes,
+          headache_level: validation.data.headache_level,
+          dizziness_level: validation.data.dizziness_level,
+          memory_issues: validation.data.memory_issues,
+          mood_rating: validation.data.mood_rating,
+          notes: validation.data.notes || null,
           stickers_earned: stickers
         });
 

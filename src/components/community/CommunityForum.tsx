@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Heart, MessageCircle, Pin, Lock, Search, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { forumPostSchema } from "@/utils/validationSchemas";
 
 interface ForumPost {
   id: string;
@@ -105,24 +106,43 @@ export const CommunityForum = () => {
   };
 
   const createPost = async () => {
-    if (!newPost.title || !newPost.content) {
+    // Validate input
+    const validation = forumPostSchema.safeParse({
+      title: newPost.title.trim(),
+      content: newPost.content.trim(),
+      category: newPost.tags.trim()
+    });
+
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
       toast({
-        title: "Error",
-        description: "Please fill in all required fields",
+        title: "Validation Error",
+        description: firstError.message,
         variant: "destructive",
       });
       return;
     }
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to create a post",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from('forum_posts')
         .insert({
           forum_id: selectedForum,
-          title: newPost.title,
-          content: newPost.content,
-          tags: newPost.tags.split(',').map(tag => tag.trim()),
-          author_id: 'current_user_id' // Replace with actual auth.uid()
+          title: validation.data.title,
+          content: validation.data.content,
+          tags: newPost.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+          author_id: user.id
         });
 
       if (error) throw error;
