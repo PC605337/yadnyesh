@@ -124,6 +124,12 @@ export function ComprehensivePatientDashboard() {
       color: "bg-trust-purple/10 text-trust-purple hover:bg-trust-purple/20"
     },
     {
+      icon: AlertTriangle,
+      label: "Emergency Care",
+      action: () => window.location.href = '/patient/emergency',
+      color: "bg-red-600/10 text-red-600 hover:bg-red-600/20"
+    },
+    {
       icon: Heart,
       label: "Maternal Care",
       action: () => setActiveTab("maternal"),
