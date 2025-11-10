@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -25,6 +26,12 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { insuranceClaimSchema } from "@/utils/validationSchemas";
+import { z } from "zod";
+
+type InsuranceClaimFormData = z.infer<typeof insuranceClaimSchema>;
 
 interface PatientInsurance {
   id: string;
@@ -82,11 +89,8 @@ export function InsuranceManager() {
     coverage_amount: 0
   });
 
-  const [newClaim, setNewClaim] = useState({
-    insurance_provider: '',
-    policy_number: '',
-    claim_amount: 0,
-    appointment_id: ''
+  const { register, handleSubmit, formState: { errors }, reset: resetClaimForm } = useForm<InsuranceClaimFormData>({
+    resolver: zodResolver(insuranceClaimSchema)
   });
 
   useEffect(() => {
@@ -170,30 +174,33 @@ export function InsuranceManager() {
     }
   };
 
-  const fileClaim = async () => {
+  const fileClaim = async (data: InsuranceClaimFormData) => {
     try {
       const claimNumber = `CLM-${Date.now()}`;
       
       const { error } = await supabase
         .from('insurance_claims')
         .insert({
-          ...newClaim,
           patient_id: user?.id,
+          insurance_provider: data.insurance_provider,
+          policy_number: data.policy_number,
+          claim_amount: data.claim_amount,
+          appointment_id: data.appointment_id || null,
           claim_number: claimNumber,
           status: 'submitted',
-          submitted_date: new Date().toISOString()
+          submitted_date: new Date().toISOString(),
+          documents: {
+            description: data.description,
+            service_date: data.service_date,
+            diagnosis: data.diagnosis
+          }
         });
 
       if (error) throw error;
 
-      toast.success('Insurance claim filed successfully!');
+      toast.success('Insurance claim filed successfully! You will receive updates via notifications.');
       setIsFilingClaim(false);
-      setNewClaim({
-        insurance_provider: '',
-        policy_number: '',
-        claim_amount: 0,
-        appointment_id: ''
-      });
+      resetClaimForm();
       fetchInsuranceData();
     } catch (error) {
       console.error('Error filing claim:', error);
@@ -334,47 +341,108 @@ export function InsuranceManager() {
                 File Claim
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>File Insurance Claim</DialogTitle>
                 <DialogDescription>
-                  Submit a new insurance claim
+                  Submit a new insurance claim with required documentation
                 </DialogDescription>
               </DialogHeader>
               
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="provider">Insurance Provider</Label>
-                  <Select value={newClaim.insurance_provider} onValueChange={(value) => 
-                    setNewClaim({...newClaim, insurance_provider: value})
-                  }>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select provider" />
-                    </SelectTrigger>
-                    <SelectContent>
+              <form onSubmit={handleSubmit(fileClaim)} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2">
+                    <Label htmlFor="insurance_provider">Insurance Provider *</Label>
+                    <select 
+                      {...register('insurance_provider')}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    >
+                      <option value="">Select provider</option>
                       {insurances.map((insurance) => (
-                        <SelectItem key={insurance.id} value={insurance.provider?.name || ''}>
+                        <option key={insurance.id} value={insurance.provider?.name || ''}>
                           {insurance.provider?.name} - {insurance.policy_number}
-                        </SelectItem>
+                        </option>
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </select>
+                    {errors.insurance_provider && (
+                      <p className="text-sm text-destructive mt-1">{errors.insurance_provider.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="policy_number">Policy Number *</Label>
+                    <Input {...register('policy_number')} placeholder="Enter policy number" />
+                    {errors.policy_number && (
+                      <p className="text-sm text-destructive mt-1">{errors.policy_number.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="claim_amount">Claim Amount (₹) *</Label>
+                    <Input 
+                      type="number" 
+                      {...register('claim_amount', { valueAsNumber: true })} 
+                      placeholder="0.00" 
+                    />
+                    {errors.claim_amount && (
+                      <p className="text-sm text-destructive mt-1">{errors.claim_amount.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="service_date">Service Date *</Label>
+                    <Input type="date" {...register('service_date')} />
+                    {errors.service_date && (
+                      <p className="text-sm text-destructive mt-1">{errors.service_date.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="appointment_id">Appointment ID (Optional)</Label>
+                    <Input {...register('appointment_id')} placeholder="Appointment reference" />
+                  </div>
+
+                  <div className="col-span-2">
+                    <Label htmlFor="diagnosis">Diagnosis *</Label>
+                    <Textarea 
+                      {...register('diagnosis')} 
+                      placeholder="Brief diagnosis or reason for claim"
+                      rows={2}
+                    />
+                    {errors.diagnosis && (
+                      <p className="text-sm text-destructive mt-1">{errors.diagnosis.message}</p>
+                    )}
+                  </div>
+
+                  <div className="col-span-2">
+                    <Label htmlFor="description">Claim Description *</Label>
+                    <Textarea 
+                      {...register('description')} 
+                      placeholder="Detailed description of treatment/services provided (min 10 characters)"
+                      rows={3}
+                    />
+                    {errors.description && (
+                      <p className="text-sm text-destructive mt-1">{errors.description.message}</p>
+                    )}
+                  </div>
+
+                  <div className="col-span-2 p-4 bg-blue-50 border border-blue-200 rounded">
+                    <div className="flex items-start space-x-2">
+                      <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
+                      <div className="text-sm">
+                        <p className="font-medium text-blue-900">Required Documents</p>
+                        <p className="text-blue-700 mt-1">
+                          Please keep the following ready: Medical bills, prescription, diagnostic reports, and doctor's notes. You can upload them after claim submission.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
-                <div>
-                  <Label htmlFor="amount">Claim Amount</Label>
-                  <Input
-                    type="number"
-                    placeholder="0.00"
-                    value={newClaim.claim_amount}
-                    onChange={(e) => setNewClaim({...newClaim, claim_amount: parseFloat(e.target.value)})}
-                  />
-                </div>
-                
-                <Button onClick={fileClaim} className="w-full">
-                  File Claim
+                <Button type="submit" className="w-full">
+                  Submit Claim for Review
                 </Button>
-              </div>
+              </form>
             </DialogContent>
           </Dialog>
         </div>

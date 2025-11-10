@@ -21,6 +21,7 @@ import HelpSupport from "@/components/support/HelpSupport";
 import { PredictiveAnalytics } from "@/components/analytics/PredictiveAnalytics";
 import { AdvancedSecurity } from "@/components/security/AdvancedSecurity";
 import { InsuranceOnboarding } from "@/components/patient/InsuranceOnboarding";
+import { LabIntegration } from "@/components/lab/LabIntegration";
 
 const PatientApp = () => {
   return (
@@ -36,6 +37,7 @@ const PatientApp = () => {
         <Route path="wellness" element={<WellnessPrograms />} />
         <Route path="community" element={<CommunityForum />} />
         <Route path="pharmacy" element={<PharmacyIntegration />} />
+        <Route path="lab-tests" element={<LabIntegration />} />
         <Route path="cost-prediction" element={<CostPrediction />} />
         <Route path="payments" element={<TransparentPaymentGateway amount={2500} serviceType="teleconsult" onPaymentSuccess={(id, method) => console.log('Payment completed:', id, method)} />} />
         <Route path="wallet" element={<DigitalWallet />} />

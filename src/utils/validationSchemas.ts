@@ -262,6 +262,47 @@ export const insuranceSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Please enter a valid date (YYYY-MM-DD)" })
 });
 
+export const insuranceClaimSchema = z.object({
+  insurance_provider: z.string().min(1, { message: 'Insurance provider is required' }),
+  policy_number: z.string().min(3, { message: 'Policy number is required' }).max(50),
+  claim_amount: z.number().positive({ message: 'Claim amount must be positive' }).max(10000000),
+  appointment_id: z.string().optional(),
+  description: z.string().min(10, { message: 'Please provide claim details (min 10 characters)' }).max(1000),
+  service_date: z.string().min(1, { message: 'Service date is required' }),
+  diagnosis: z.string().min(3, { message: 'Diagnosis is required' }).max(500)
+});
+
+// ============= Lab Order Schemas =============
+
+export const labOrderSchema = z.object({
+  test_types: z.array(z.string()).min(1, { message: 'Select at least one test' }),
+  lab_partner: z.string().min(1, { message: 'Lab partner is required' }),
+  preferred_date: z.string().min(1, { message: 'Preferred date is required' }),
+  preferred_time: z.string().min(1, { message: 'Preferred time is required' }),
+  sample_type: z.enum(['home_collection', 'lab_visit']),
+  address: z.string().min(10, { message: 'Full address required for home collection' }).max(500).optional(),
+  special_instructions: z.string().max(500).optional()
+});
+
+// ============= Pharmacy Order Schemas =============
+
+export const pharmacyOrderSchema = z.object({
+  medications: z.array(z.object({
+    name: z.string().min(1),
+    dosage: z.string().min(1),
+    quantity: z.number().int().positive().max(100)
+  })).min(1, { message: 'Add at least one medication' }),
+  pharmacy_partner: z.string().min(1, { message: 'Select a pharmacy' }),
+  delivery_address: z.object({
+    street: z.string().min(5, { message: 'Street address is required' }),
+    city: z.string().min(2, { message: 'City is required' }),
+    state: z.string().min(2, { message: 'State is required' }),
+    pincode: z.string().regex(/^\d{6}$/, { message: 'Invalid pincode' })
+  }),
+  prescription_id: z.string().optional(),
+  delivery_instructions: z.string().max(300).optional()
+});
+
 // ============= Type Exports =============
 
 export type LoginInput = z.infer<typeof loginSchema>;
@@ -278,3 +319,6 @@ export type ForumPostInput = z.infer<typeof forumPostSchema>;
 export type ForumReplyInput = z.infer<typeof forumReplySchema>;
 export type PrescriptionInput = z.infer<typeof prescriptionSchema>;
 export type InsuranceInput = z.infer<typeof insuranceSchema>;
+export type InsuranceClaimInput = z.infer<typeof insuranceClaimSchema>;
+export type LabOrderInput = z.infer<typeof labOrderSchema>;
+export type PharmacyOrderInput = z.infer<typeof pharmacyOrderSchema>;
