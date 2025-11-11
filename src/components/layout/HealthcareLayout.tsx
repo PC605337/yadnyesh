@@ -29,6 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { RoleSwitcher } from "./RoleSwitcher";
+import { LanguageSwitcher } from "@/components/language/LanguageSwitcher";
 
 interface NavigationItem {
   name: string;
@@ -211,6 +212,7 @@ export function HealthcareLayout({ children }: HealthcareLayoutProps) {
             </div>
 
             <div className="flex items-center space-x-4">
+              <LanguageSwitcher />
               <RoleSwitcher />
               <RealTimeNotifications />
               

@@ -24,6 +24,12 @@ import { InsuranceOnboarding } from "@/components/patient/InsuranceOnboarding";
 import { LabIntegration } from "@/components/lab/LabIntegration";
 import { EmergencyCare } from "@/components/emergency/EmergencyCare";
 import { MedicalHistory } from "@/components/patient/MedicalHistory";
+import { MaternalHealthTracker } from "@/components/patient/MaternalHealthTracker";
+import { PediatricCareTracker } from "@/components/patient/PediatricCareTracker";
+import { MentalHealthSupport } from "@/components/mental-health/MentalHealthSupport";
+import { FertilityTracking } from "@/components/fertility/FertilityTracking";
+import { WearableIntegration } from "@/components/wearables/WearableIntegration";
+import { AICareCoordination } from "@/components/ai/AICareCoordination";
 
 const PatientApp = () => {
   return (
@@ -42,6 +48,12 @@ const PatientApp = () => {
         <Route path="lab-tests" element={<LabIntegration />} />
         <Route path="emergency" element={<EmergencyCare />} />
         <Route path="medical-history" element={<MedicalHistory />} />
+        <Route path="maternal-health" element={<MaternalHealthTracker />} />
+        <Route path="pediatric-care" element={<PediatricCareTracker />} />
+        <Route path="mental-health" element={<MentalHealthSupport />} />
+        <Route path="fertility" element={<FertilityTracking />} />
+        <Route path="wearables" element={<WearableIntegration />} />
+        <Route path="ai-care" element={<AICareCoordination />} />
         <Route path="cost-prediction" element={<CostPrediction />} />
         <Route path="payments" element={<TransparentPaymentGateway amount={2500} serviceType="teleconsult" onPaymentSuccess={(id, method) => console.log('Payment completed:', id, method)} />} />
         <Route path="wallet" element={<DigitalWallet />} />
